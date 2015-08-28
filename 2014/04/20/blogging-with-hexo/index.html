@@ -86,14 +86,17 @@
 <li><p>在 GitHub 上 <a href="https://github.com/new" target="_blank" rel="external">创建一个 repo</a>，格式是 <code>username</code>.github.io。</p>
 </li>
 <li><p>打开 Hexo 配置文件 <code>_config.yml</code>，设置博客 url 和 deploy 相关参数：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url: http://iwill.github.io/&#10;deploy:&#10;  type: github&#10;  repo: https://github.com/iwill/iwill.github.io.git</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url: http://iwill.github.io/&#10;deploy:&#10;  type: git&#10;  repo: https://github.com/iwill/iwill.github.io.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 <code>hexo-deployer-git</code>：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="operator"><span class="keyword">install</span> hexo-deployer-git <span class="comment">--save</span></span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>发布静态文件到 GitHub：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>访问 <a href="https://github.com/iwill/iwill.github.io" target="_blank" rel="external">https://github.com/iwill/iwill.github.io</a> 可以看见刚刚发布上去的静态文件，访问 <a href="http://iwill.github.io" target="_blank" rel="external">http://iwill.github.io</a> 就可以看见博客了！</p>
-<p>更多参考 <a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>。</p>
+<p>更多参考 <a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>、<a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Hexo Deployment</a>。</p>
 <h2 id="使用个性域名">使用个性域名</h2><p>没有域名可以去 <a href="https://domai.nr/" target="_blank" rel="external">https://domai.nr/</a> 找一个注册，之后做如下设置：</p>
 <ol>
 <li><p>Hexo 的配置文件中的 url 设置为完整的博客地址，如 <code>http://iwill.im/</code>。</p>
