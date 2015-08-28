@@ -43,7 +43,7 @@
     <link href="http://iwill.im/2014/04/20/blogging-with-hexo/"/>
     <id>http://iwill.im/2014/04/20/blogging-with-hexo/</id>
     <published>2014-04-20T04:35:58.000Z</published>
-    <updated>2015-08-28T10:22:54.000Z</updated>
+    <updated>2015-08-28T10:55:17.000Z</updated>
     <content type="html"><![CDATA[<p>2009 年 <a href="https://github.com/zigzag" target="_blank" rel="external">Zigzag</a> 就教了我怎么用 <a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a> 写博客 —— 使用 <a href="http://daringfireball.net/projects/markdown/" target="_blank" rel="external">Markdown</a> 撰写、转成 HTML、发布到 GitHub。当时觉得很酷，可后来一直没写 …. 现在他去天堂写代码已经快满 4 年了，为了避免被我对不起的 Zig 带走，上周末终于搭起自己的博客 <a href="/" title="iwill">iwill.im</a>。</p>
 <p>看到我订阅的博客多半是用 <a href="http://octopress.org/" target="_blank" rel="external">Octopress</a> 搭建的，所以认定这是个高大上。但是貌似是 XCode 升级到 5.1.1 导致 Ruby 的一些东西不正常了，一直安装失败，GitHub Pages 推荐的 <a href="http://jekyllrb.com/" title="Jekyll &bull; Simple, blog-aware, static sites" target="_blank" rel="external">Jekyll</a> 也一样。折腾大半天，非 Ruby Fan 实在无法坚持了，装 B 不成、最终选了 <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a> [hekso] - <code>A fast, simple &amp; powerful blog framework, powered by Node.js</code>，与前者的使用很相似。不熟悉 Javascript 也没关系，只要不改模版基本不会碰到 Javascript。</p>
 <a id="more"></a>
@@ -86,10 +86,11 @@
 </li>
 <li><p>然后执行 <code>hexo d -g</code> 将上面设置发布到 GitHub Pages 上。</p>
 </li>
-<li><p>在域名服务后台设置域名跳转，注意子域名 (如 <code>www.iwill.im</code>、<code>blog.iwill.im</code>) 和顶级域名 (如 <code>iwill.im</code>) 的设置有所不同，需仔细阅读下面说明进行设置、校验：<br> <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#subdomains" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#subdomains</a><br> <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#apex-domains" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#apex-domains</a><br> 这是我的设置：<br><img src="/images/blogging-with-hexo-domain-settings.png" alt="image"></p>
+<li><p>在域名服务后台设置域名跳转，注意二级域名 (如 <code>iwill.im</code>) 和三级域名 (如 <code>www.iwill.im</code>、<code>blog.iwill.im</code>) 的设置有所不同，需仔细阅读下面说明进行设置、校验：<br> <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#subdomains" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#subdomains</a><br> <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#apex-domains" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#apex-domains</a><br> 这是我的设置：<br><img src="/images/blogging-with-hexo-domain-settings.png" alt="image"></p>
 </li>
 </ol>
-<h2 id="写博客">写博客</h2><p>到这才发现，写博客才是最困难的 …</p>
+<h2 id="写博客">写博客</h2><p>在文章中插入 <code>&lt;!-- more --&gt;</code> 可以将前面部分生成摘要，否则默认显示全文；</p>
+<p>到这才发现，写博客才是最困难的 …</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>2009 年 <a href="https://github.com/zigzag">Zigzag</a> 就教了我怎么用 <a href="https://pages.github.com/">GitHub Pages</a> 写博客 —— 使用 <a href="http://daringfireball.net/projects/markdown/">Markdown</a> 撰写、转成 HTML、发布到 GitHub。当时觉得很酷，可后来一直没写 …. 现在他去天堂写代码已经快满 4 年了，为了避免被我对不起的 Zig 带走，上周末终于搭起自己的博客 <a href="/" title="iwill">iwill.im</a>。</p>
