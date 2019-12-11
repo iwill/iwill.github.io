@@ -112,6 +112,7 @@
         |
         <button id="copy">copy</button>
         <!-- TODO: document.execCommand("copy"); -->
+        <!-- TODO: show and copy as code -->
         <button id="share">share</button>
         <!-- TODO: share with #hash, but not change the href, !!!: alert for overwriting or TODO: supports history -->
     </div>
@@ -246,6 +247,7 @@
                         r = eval(code);
                     }
                 }
+                console.log(r ? (code + " = " + r) : code);
                 
                 /// vars
                 let type = typeof r;
