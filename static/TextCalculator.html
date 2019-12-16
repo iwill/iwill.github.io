@@ -1,11 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>TextCalculator by MingLQ</title>
 <!--
     Created by MingLQ on 2019-11-22.
     Copyright © 2019 MingLQ <minglq.9@gmail.com>. Released under the MIT license.
 -->
+<title>TextCalculator by MingLQ</title>
+<meta name="viewport" content="width=device-width, user-scalable=yes" />
 <style type="text/css" media="all">
     html {
         --space: 5px;
@@ -85,7 +86,8 @@
         line-height: 15px;
         white-space: pre;
     }
-    .code::-webkit-scrollbar {
+    #src::-webkit-scrollbar,
+    #ln::-webkit-scrollbar {
         width: 0;
         background: transparent;
     }
@@ -110,9 +112,9 @@
         |
         <button id="clear" onclick="clearSource(event, this.id)">clear</button>
         |
-        <button id="copy">copy</button>
+        <button id="export">export</button>
         <!-- TODO: document.execCommand("copy"); -->
-        <!-- TODO: show and copy as code -->
+        <!-- TODO: show and export as code -->
         <button id="share">share</button>
         <!-- TODO: share with #hash, but not change the href, !!!: alert for overwriting or TODO: supports history -->
     </div>
