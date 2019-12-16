@@ -77,7 +77,6 @@
         width: 100%;
         height: 100%;
         resize: none;
-        /* overflow-x: hidden; */
         margin: 0;
         padding: var(--space);
         border-style: solid;
@@ -85,6 +84,7 @@
         border-color: gray;
         line-height: 15px;
         white-space: pre;
+        overflow-x: scroll;
     }
     #src::-webkit-scrollbar,
     #ln::-webkit-scrollbar {
@@ -94,29 +94,31 @@
 </style>
 </head>
 <body>
-    <div style="height: var(--top-height); float: left; padding: var(--space) 0;">
-        TextCalculator by MingLQ
-    </div>
-    <div style="height: var(--top-height); float: right; padding: var(--space) 0;">
-        DecimalDigits: <select id="decimalDigits" onchange="calculate(event, this.id)">
-            <option value="-1">--</option>
-            <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option>
-            <option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option>
-            <option value="15">15</option><option value="16">16</option>
-        </select>
-        RoundingMethod: <select id="roundingMethod" onchange="calculate(event, this.id)">
-            <option value="round">round</option><option value="floor">floor</option><option value="ceil">ceil</option>
-        </select>
-        <button id="reset" onclick="resetSetting(event, this.id)">reset</button>
-        |
-        <button id="clear" onclick="clearSource(event, this.id)">clear</button>
-        |
-        <button id="export">export</button>
-        <!-- TODO: document.execCommand("copy"); -->
-        <!-- TODO: show and export as code -->
-        <button id="share">share</button>
-        <!-- TODO: share with #hash, but not change the href, !!!: alert for overwriting or TODO: supports history -->
+    <div style="height: var(--top-height); position: relative; overflow-x: scroll;">
+        <div style="position: absolute; left: 0; top: 0; padding: var(--space) 0;">
+            TextCalculator by MingLQ
+        </div>
+        <div style="position: absolute; right: 0; top: 0; padding: var(--space) 0;">
+            DecimalDigits: <select id="decimalDigits" onchange="calculate(event, this.id)">
+                <option value="-1">--</option>
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                <option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option>
+                <option value="15">15</option><option value="16">16</option>
+            </select>
+            RoundingMethod: <select id="roundingMethod" onchange="calculate(event, this.id)">
+                <option value="round">round</option><option value="floor">floor</option><option value="ceil">ceil</option>
+            </select>
+            <button id="reset" onclick="resetSetting(event, this.id)">reset</button>
+            |
+            <button id="clear" onclick="clearSource(event, this.id)">clear</button>
+            |
+            <button id="export">export</button>
+            <!-- TODO: document.execCommand("copy"); -->
+            <!-- TODO: show and export as code -->
+            <button id="share">share</button>
+            <!-- TODO: share with #hash, but not change the href, !!!: alert for overwriting or TODO: supports history -->
+        </div>
     </div>
     <div id="left" class="container">
         <textarea id="src" class="code" oninput="calculate(event, this.id)" onscroll="syncScrolling(event, this.id)"></textarea>
