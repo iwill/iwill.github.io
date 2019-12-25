@@ -9,6 +9,8 @@
 <meta name="viewport" content="width=device-width, user-scalable=yes" />
 <style type="text/css" media="all">
     html {
+        --margin: 8px;
+        --space-l: var(--margin);
         --space: 5px;
     }
     body {
@@ -32,7 +34,6 @@
         padding: 0;
     }
     body {
-        --margin: 8px;
         height: calc(100% - var(--margin) * 2);
         margin: var(--margin);
         padding: 0;
@@ -40,11 +41,11 @@
     
     #right {
         width: var(--right-width);
-        margin: 0 0 0 var(--space);
+        margin: 0 0 0 var(--space-l);
         position: relative;
     }
     #left {
-        width: calc(100% - var(--right-width) - var(--space));
+        width: calc(100% - var(--right-width) - var(--space-l));
         margin: 0;
     }
     .container {
