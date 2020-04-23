@@ -167,15 +167,6 @@
         }
     }
     
-    function Radix(number, radix) {
-        let prefix = (radix == 2) ? "0b" : (radix == 8) ? "0o" : (radix == 16) ? "0x" : "";
-        this.number = number;
-        this.display = prefix + number.toString(radix).toUpperCase();
-    }
-    Math.format = function(number, radix) {
-        return new Radix(number, radix);
-    };
-    
     for (let method of ["round", "floor", "ceil"]) {
         let _method = "_" + method;
         Math[_method] = Math[method];
@@ -190,7 +181,7 @@
     
     Math.GR = Math.sqrt(1.25) - 0.5; // Golden Ratio
     
-    const resultTypes = ["number", "boolean"];
+    const calcTypes = ["number", "boolean"];
     
     // querySelector || querySelectorAll
     let $script = document.querySelector("#script");
@@ -204,17 +195,17 @@
     function calculate() {
         /// prepare
         let script = $script.value
-        .replace(/===/g, "==").replace(/==/g, "=").replace(/=/g, "==") // =, ==, === >> ==
-        .replace(/==\s*\/\//, "//") // before comments
-        .replace(/==\s*\n/, "\n") // before end of line
-        .replace(/==\s*$/, ""); // bofore end of string
+        .replace(/(?<!=)=(?!=)/g, "==") // = to ==
+        .replace(/==\s*\/\//, "//") // == before comments
+        .replace(/==\s*\n/, "\n") // == before end of line
+        .replace(/==\s*$/, ""); // == bofore end of string
         
         // TODO: value.toLocaleString(undefined, {style: "decimal"/"currency"/"percent", currency: "USD"/"EUR"/"CNY", useGrouping: true});
         // #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
         // let display = value.toLocaleString();
         /* TODO: lines [{
             result: number / "" / "ERROR",
-            display: formatted-number / "" / "ERROR",
+            display: converted-number / "" / "ERROR",
             lineNumber: number / "",
             output: `code = value // comment`
         }, ...] */
@@ -269,25 +260,25 @@
                     \:
                 `; // `${"img"}`
                 
-                let funcMatches = code.match(regExp);
-                if (funcMatches) {
-                    funcName = funcMatches.groups.name;
+                let funcRes = code.match(regExp);
+                if (funcRes) {
+                    funcName = funcRes.groups.name;
                     if (Math[funcName]) {
                         throw "ivalid func in `" + line + "`";
                     }
-                    funcArgs = funcMatches.groups.args;
-                    code = code.slice(funcMatches.index + funcMatches[0].length).trim();
+                    funcArgs = funcRes.groups.args;
+                    code = code.slice(funcRes.index + funcRes[0].length).trim();
                 }
                 
                 /// find `variable`
                 // `(word-start) (no-number) words (word-end) colon`
-                let variableMatches = code.match(/^[A-z_][A-z0-9_]*\s*\:/);
-                if (variableMatches) {
-                    variable = variableMatches[0].slice(0, -1).trim();
+                let varRes = code.match(/^[A-z_][A-z0-9_]*\s*\:/);
+                if (varRes) {
+                    variable = varRes[0].slice(0, -1).trim();
                     if (Math[variable]) {
                         throw "ivalid variable in `" + line + "`";
                     }
-                    code = code.slice(variableMatches.index + variableMatches[0].length).trim();
+                    code = code.slice(varRes.index + varRes[0].length).trim();
                 }
                 
                 /// validate and insert namespace
@@ -309,7 +300,8 @@
                 
                 /// replace `$x`
                 /// prepend `$` if `(line-start) (no-dollar) (no-left-parenthesis) (no-words)`
-                if (resultTypes.includes(typeof result[result.length - 1]) && code.length && !code.match(/^[\$\(\w]+/)) {
+                let prevRes = result[result.length - 1];
+                if ((prevRes || prevRes === 0 || prevRes === false) && code.length && !code.match(/^[\$\(\w]+/)) {
                     code = "$ " + code;
                 }
                 // `dollar [numbers]`
@@ -318,6 +310,28 @@
                     let i = Number($x.slice(1)) - 1;
                     return i >= 0 && i < values.length ? values[i] : undefined;
                 });
+                
+                /// output percentage
+                let pctRes = code.match(/%%\s*$/);
+                if (pctRes) {
+                    code = code.slice(0, pctRes.index).trim();
+                }
+                /// input percentage
+                let pcRegExp = /(\d+(\.\d+)?)\s*%(?!\s*[\w\(])/g;
+                let pcRes = null;
+                while ((pcRes = pcRegExp.exec(code))) {
+                    let c = code.slice(0, pcRes.index) + "(" + pcRes[0].replace("%", " / 100") + ")" + code.slice(pcRegExp.lastIndex);
+                    pcRegExp.lastIndex += (c.length - code.length);
+                    code = c;
+                }
+                
+                /// convert base of number system
+                let cvtBase = 10;
+                let cvtRes = code.match(/#\d*/);
+                if (cvtRes) {
+                    cvtBase = Number(cvtRes[0].slice(1));
+                    code = code.slice(0, cvtRes.index).trim();
+                }
                 
                 /// eval
                 with (Math) {
@@ -331,21 +345,29 @@
                 }
                 console.log(value ? (code + " = " + value) : code);
                 
-                if (value instanceof Radix) {
-                    display = value.display;
-                    value = value.number;
-                }
-                
                 /// variables
                 let type = typeof value;
                 if (type == "number") {
                     let decimalDigits = Number($decimalDigits.value);
-                    if (decimalDigits >= 0) {
-                        let roundingMethod = $roundingMethod.value;
-                        value = Math[roundingMethod](value, decimalDigits);
+                    let rounding = decimalDigits < 0 || function(value, decimalDigits) {
+                        return Math[$roundingMethod.value](value, decimalDigits);
+                    };
+                    if (rounding) {
+                        value = rounding(value, decimalDigits);
                     }
                     variables.$ = value;
                     if (variable) variables[variable] = value;
+                    if (pctRes) {
+                        let pctValue = value * 100;
+                        if (rounding) {
+                            pctValue = rounding(pctValue, decimalDigits);
+                        }
+                        display = pctValue + "%";
+                    }
+                    else if (cvtBase != 10) {
+                        let prefix = (cvtBase == 2) ? "0b" : (cvtBase == 8) ? "0o" : (cvtBase == 16) ? "0x" : "";
+                        display = prefix + value.toString(cvtBase).toUpperCase();
+                    }
                 }
                 else if (type == "boolean") {
                     variables.$ = value;
@@ -362,7 +384,7 @@
             
             /// result
             result.push(display || value);
-            if (resultTypes.includes(typeof value)) {
+            if (calcTypes.includes(typeof value)) {
                 values.push(value);
                 lineNumber.push((values.length < 10 ? " " : "") + values.length);
                 output.push(code.replace(/\s*functions\.\s*/g, "") + " = " + value + (comment ? (" " + comment) : ""));
@@ -432,7 +454,7 @@
             return;
         }
         
-        var key = event.key.toLowerCase();
+        let key = event.key.toLowerCase();
         if (event.ctrlKey && ["c", "u"].includes(key)) {
             let script = $script.value;
             let start = $script.selectionStart, end = $script.selectionEnd;
