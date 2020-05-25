@@ -400,7 +400,7 @@
             result.push(display || value);
             if (calcTypes.includes(typeof value)) {
                 values.push(value);
-                lineNumber.push((values.length < 10 ? " " : "") + values.length);
+                lineNumber.push(values.length);
                 output.push(code.replace(/\s*functions\.\s*/g, "") + " = " + value + (comment ? (" " + comment) : ""));
             }
             else {
@@ -414,6 +414,9 @@
         $result.value = result.join("\n");
         $lineNumber.value = lineNumber.join("\n");
         $output.value = output.join("\n");
+        
+        let lnLength = values.length.toString().length;
+        document.body.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
     }
     
     function hashChange(event) {
