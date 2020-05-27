@@ -227,14 +227,16 @@
             let code, func, comment;
             let value, display;
             try {
-                if (values.length >= 999) {
-                    throw "too many calculations";
-                }
-                
                 /// validate
                 let commentIndex = line.indexOf("//");
                 code = commentIndex >= 0 ? line.slice(0, commentIndex).trim() : line;
                 comment = commentIndex >= 0 ? line.slice(commentIndex).trim() : null;
+                
+                // limit
+                if (values.length >= 1000 && code.length) {
+                    throw "too many calculations";
+                }
+                
                 // symbols
                 if (/[\[\]\{\}'"\\;]/g.test(code)) {
                     throw "invalid symbol in `" + line + "`";
@@ -317,7 +319,7 @@
                 // `dollar [numbers]`
                 code = code.replace(/\$\d*/g, function($x) {
                     if ($x == "$" || $x == "$0") return variables.$;
-                    let i = Number($x.slice(1)) - 1;
+                    let i = Number($x.slice(1));
                     return i >= 0 && i < values.length ? values[i] : undefined;
                 });
                 /// replace `👆 [color]`
@@ -400,7 +402,7 @@
             result.push(display || value);
             if (calcTypes.includes(typeof value)) {
                 values.push(value);
-                lineNumber.push(values.length);
+                lineNumber.push(values.length - 1);
                 output.push(code.replace(/\s*functions\.\s*/g, "") + " = " + value + (comment ? (" " + comment) : ""));
             }
             else {
