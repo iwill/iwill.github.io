@@ -10,15 +10,13 @@
 <!-- meta name="viewport" content="width=device-width, user-scalable=no" / -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <style type="text/css" media="all">
-    html {
+    :root {
         --margin: 8px;
-        --space-l: var(--margin);
+        --space-l: 8px;
         --space: 5px;
-    }
-    body {
         --top-height: 30px;
         --right-width: 25%;
-        --ln-width: 30px;
+        --ln-width: 20px;
     }
     
     html {
@@ -39,6 +37,17 @@
         height: calc(100% - var(--margin) * 2);
         margin: var(--margin);
         padding: 0;
+        overflow: hidden;
+    }
+    h1#background {
+        z-index: -1;
+        position: absolute;
+        font-size: 20vh;
+        color: ghostwhite;
+    }
+    h1#title {
+        display: inline-block;
+        margin: 0;
     }
     
     select:disabled {
@@ -102,6 +111,7 @@
         border-style: solid;
         border-width: 1px;
         border-color: gray;
+        background-color: transparent;
         line-height: 15px;
         white-space: pre;
         word-wrap: normal; /* for Safari */
@@ -116,10 +126,11 @@
 </style>
 </head>
 <body>
+    <h1 id="background">Script-<br />Calculator<br />by MingLQ</h1>
     <!-- TODO: overflow: scroll / hide left; -->
     <div style="height: var(--top-height); position: relative; overflow-x: scroll;">
         <div style="position: absolute; left: 0; top: 0; padding: var(--space) 0;">
-            ScriptCalculator by MingLQ [<a href="https://github.com/iwill/ScriptCalculator" target="blank">GitHub</a>]
+            <h1 id="title">ScriptCalculator by MingLQ</h1> [<a href="https://github.com/iwill/ScriptCalculator" target="blank">GitHub</a>]
         </div>
         <div style="position: absolute; right: 0; top: 0; padding: var(--space) 0;">
             decimal: <select id="decimalPlaces" onchange="sthChange(event, this)">
@@ -318,9 +329,8 @@
                 /// replace `$x`
                 // `dollar [numbers]`
                 code = code.replace(/\$\d*/g, function($x) {
-                    if ($x == "$" || $x == "$0") return variables.$;
-                    let i = Number($x.slice(1));
-                    return i >= 0 && i < values.length ? values[i] : undefined;
+                    if ($x == "$") return variables.$;
+                    return values[Number($x.slice(1))]; // value or undefined
                 });
                 /// replace `👆 [color]`
                 code = code.replace(/👆[🏻🏼🏼🏽🏾🏿]?/gu, function($x) {
@@ -359,7 +369,6 @@
                         value = eval(code);
                     }
                 }
-                console.log(value ? (code + " = " + value) : code);
                 
                 /// variables
                 let type = typeof value;
@@ -384,6 +393,14 @@
                         let prefix = (cvtBase == 2) ? "0b" : (cvtBase == 8) ? "0o" : (cvtBase == 16) ? "0x" : "";
                         display = prefix + value.toString(cvtBase).toUpperCase();
                     }
+                    else if (value.toString().indexOf("e") > 0) {
+                        if (value > 1) {
+                            display = value.toLocaleString("fullwide", { useGrouping: false });
+                        }
+                        else {
+                            display = value.toFixed(20);
+                        }
+                    }
                 }
                 else if (type == "boolean") {
                     variables.$ = value;
@@ -392,6 +409,8 @@
                 else if (value) {
                     throw "invalid expression in `" + line + "`";
                 }
+                
+                console.log(value ? (code + " = " + (display || value)) : code);
             }
             catch(e) {
                 console.warn(e);
@@ -403,7 +422,7 @@
             if (calcTypes.includes(typeof value)) {
                 values.push(value);
                 lineNumber.push(values.length - 1);
-                output.push(code.replace(/\s*functions\.\s*/g, "") + " = " + value + (comment ? (" " + comment) : ""));
+                output.push(code.replace(/\s*functions\.\s*/g, "") + " = " + (display || value) + (comment ? (" " + comment) : ""));
             }
             else {
                 lineNumber.push("");
@@ -418,7 +437,7 @@
         $output.value = output.join("\n");
         
         let lnLength = values.length.toString().length;
-        document.body.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
+        document.documentElement.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
     }
     
     function hashChange(event) {
