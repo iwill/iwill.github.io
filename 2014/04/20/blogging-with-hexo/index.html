@@ -7,7 +7,7 @@
   <meta name="author" content="iwill">
   
   <meta name="description" content="2009 年 Zigzag 就教了我怎么用 GitHub Pages 写博客 —— 使用 Markdown 撰写、转成 HTML、发布到 GitHub。当时觉得很酷，可后来一直没写 …. 现在他去天堂写代码已经快满 4 年了，为了避免被我对不起的 Zig 带走，上周末终于搭起自己的博客 iwill.im。
-看到我订阅的博客多半是用 Octopress 搭建的，所以认定这是个高大上。但是貌似是 XCode 升级到 5.1.1 导致 Ruby 的一些东西不正常了，一直安装失败，GitHub Pages 推荐的 Jekyll 也一样。折腾大半天，非 Ruby Fan 实在无法坚持了，装 B 不成、最终选了 Hexo [hekso] - A fast, simple &amp;amp; powerful blog framework, powered by Node.js，与前者的使用很相似。不熟悉 Javascript 也没关系，只要不改模版基本不会碰到 Javascript。">
+看到我订阅的博客多半是用 Octopress 搭建的，所以认定这是个高大上。但是貌似是 XCode 升级到 5.1.1 导致 Ruby 的一些东西不正常了，一直安装失败，GitHub Pages 推荐的 Jekyll 也一样。折腾大半天，非 Ruby Fan 实在无法坚持了，装 B 不成、最终选了 Hexo [hekso] - A fast, simple &amp;amp; powerful blog framework, powered by Node.js，与前者的使用很相似。不熟悉 JavaScript 也没关系，只要不改模版基本不会碰到 JavaScript。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -66,13 +66,13 @@
     <div class="entry">
       
         <p>2009 年 <a target="_blank" rel="noopener" href="https://github.com/zigzag">Zigzag</a> 就教了我怎么用 <a target="_blank" rel="noopener" href="https://pages.github.com/">GitHub Pages</a> 写博客 —— 使用 <a target="_blank" rel="noopener" href="http://daringfireball.net/projects/markdown/">Markdown</a> 撰写、转成 HTML、发布到 GitHub。当时觉得很酷，可后来一直没写 …. 现在他去天堂写代码已经快满 4 年了，为了避免被我对不起的 Zig 带走，上周末终于搭起自己的博客 <a href="/" title="iwill">iwill.im</a>。</p>
-<p>看到我订阅的博客多半是用 <a target="_blank" rel="noopener" href="http://octopress.org/">Octopress</a> 搭建的，所以认定这是个高大上。但是貌似是 XCode 升级到 5.1.1 导致 Ruby 的一些东西不正常了，一直安装失败，GitHub Pages 推荐的 <a target="_blank" rel="noopener" href="http://jekyllrb.com/" title="Jekyll &bull; Simple, blog-aware, static sites">Jekyll</a> 也一样。折腾大半天，非 Ruby Fan 实在无法坚持了，装 B 不成、最终选了 <a target="_blank" rel="noopener" href="http://hexo.io/">Hexo</a> [hekso] - <code>A fast, simple &amp; powerful blog framework, powered by Node.js</code>，与前者的使用很相似。不熟悉 Javascript 也没关系，只要不改模版基本不会碰到 Javascript。</p>
+<p>看到我订阅的博客多半是用 <a target="_blank" rel="noopener" href="http://octopress.org/">Octopress</a> 搭建的，所以认定这是个高大上。但是貌似是 XCode 升级到 5.1.1 导致 Ruby 的一些东西不正常了，一直安装失败，GitHub Pages 推荐的 <a target="_blank" rel="noopener" href="http://jekyllrb.com/" title="Jekyll &bull; Simple, blog-aware, static sites">Jekyll</a> 也一样。折腾大半天，非 Ruby Fan 实在无法坚持了，装 B 不成、最终选了 <a target="_blank" rel="noopener" href="http://hexo.io/">Hexo</a> [hekso] - <code>A fast, simple &amp; powerful blog framework, powered by Node.js</code>，与前者的使用很相似。不熟悉 JavaScript 也没关系，只要不改模版基本不会碰到 JavaScript。</p>
 <span id="more"></span>
 
 <h2 id="安装-Node-js-amp-NPM"><a href="#安装-Node-js-amp-NPM" class="headerlink" title="安装 Node.js &amp; NPM"></a>安装 Node.js &amp; NPM</h2><p>首先建议安装 <a target="_blank" rel="noopener" href="http://brew.sh/" title="The missing package manager for OS X">Homebrew</a> - <code>The missing package manager for OS X</code>。感觉叫 <code>missing</code> 的都是极品，比如 <a target="_blank" rel="noopener" href="http://macromates.com/" title="The missing editor for Mac OS X">TextMate</a> - <code>The missing editor for Mac OS X</code>。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -e <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)</span>&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>安装 <a target="_blank" rel="noopener" href="http://nodejs.org/">Node.js</a> - 服务端的 Javascript，以及 <a target="_blank" rel="noopener" href="https://npmjs.org/" title="Node Packaged Modules">npm</a> - Node Packaged Modules。npm 是前者的 Package Manager，会随 Node.js 一同安装。</p>
+<p>安装 <a target="_blank" rel="noopener" href="http://nodejs.org/">Node.js</a> - 服务端的 JavaScript，以及 <a target="_blank" rel="noopener" href="https://npmjs.org/" title="Node Packaged Modules">npm</a> - Node Packaged Modules。npm 是前者的 Package Manager，会随 Node.js 一同安装。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br></pre></td></tr></table></figure>
 
 <h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo -g <span class="comment"># 安装 Hexo</span></span><br><span class="line">hexo init iwill.im &amp;&amp; <span class="built_in">cd</span> iwill.im <span class="comment"># 初始化 Workspace，名字随意</span></span><br><span class="line">hexo generate <span class="comment"># 从 Markdown 生成静态文件，初始化时会生成一个 Hello World</span></span><br><span class="line">hexo server <span class="comment"># 启动本地 Server</span></span><br></pre></td></tr></table></figure>

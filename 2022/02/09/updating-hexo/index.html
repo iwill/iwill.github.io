@@ -8,7 +8,7 @@
   
   <meta name="description" content="2014 年搭建了博客，然后就没再写 🤪
 博客被我用来发布一个非常强大的程序员专用计算器 ScriptCalculator，详细介绍看这里 GitHub。
-刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 Hexo (3.9.0) 版本太低，与 Node (17.4.0) ">
+刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 Hexo (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 博客，这里记录一下，以备多年后再次升级用 🙈">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -56,7 +56,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2022-02-09T13:46:17.000Z"><a href="/2022/02/09/Update-Hexo/">2022-02-09</a></time>
+        <time datetime="2022-02-09T13:46:17.000Z"><a href="/2022/02/09/updating-hexo/">2022-02-09</a></time>
       
       
   
@@ -68,9 +68,21 @@
       
         <p>2014 年搭建了博客，然后就没再写 🤪</p>
 <p>博客被我用来发布一个非常强大的程序员专用计算器 <a href="/static/ScriptCalculator.html">ScriptCalculator</a>，详细介绍看这里 <a target="_blank" rel="noopener" href="https://github.com/iwill/ScriptCalculator">GitHub</a>。</p>
-<p>刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 <a target="_blank" rel="noopener" href="https://alanlee.fun/2021/02/28/hexo-empty-html/">Hexo</a> (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 <a target="_blank" rel="noopener" href="https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/">博客</a>，这里记录一下，以备多年后再次升级用。</p>
+<p>刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 <a target="_blank" rel="noopener" href="https://alanlee.fun/2021/02/28/hexo-empty-html/">Hexo</a> (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 <a target="_blank" rel="noopener" href="https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/">博客</a>，这里记录一下，以备多年后再次升级用 🙈</p>
+<span id="more"></span>
+
+<ol>
+<li>升级 Hexo</li>
+</ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">查看 Hexo 版本</span></span><br><span class="line">hexo v</span><br><span class="line"><span class="meta"># </span><span class="language-bash">升级 Hexo</span></span><br><span class="line">npm i hexo-cli -g</span><br><span class="line"><span class="meta"># </span><span class="language-bash">确认 Hexo 版本</span></span><br><span class="line">hexo v</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">安装 npm-check</span></span><br><span class="line">npm install -g npm-check</span><br><span class="line"><span class="meta"># </span><span class="language-bash">检查 npm 过期的、错误的、没有用到的依赖，支持 `-g` 参数</span></span><br><span class="line">npm-check</span><br><span class="line"><span class="meta"># </span><span class="language-bash">根据提示需要执行 update，但要忽略 Hexo 及相关扩展没有用到提示，不要卸载</span></span><br><span class="line">npm-check -u</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">安装 npm-upgrade</span></span><br><span class="line">npm install -g npm-upgrade</span><br><span class="line"><span class="meta"># </span><span class="language-bash">升级 npm modules，同样支持 `-g` 参数</span></span><br><span class="line">npm-upgrade</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">升级 npm packages</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">博客说这里可能遇到 `xcodebuild` 相关的错误，升级就好了，我一直追着升，所以并没有遇到</span></span><br><span class="line">npm update -g</span><br><span class="line">npm update --save</span><br></pre></td></tr></table></figure>
 
+<ol start="2">
+<li>升级配置</li>
+</ol>
+<p>发布时遇到提示不支持用户名+密码方式 push 代码，所以 <code>_config.yml</code> 中的 <code>repo</code> 要改为 <code>ssh</code> URL：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">http://iwill.github.io/</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:iwill/iwill.github.io.git</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，一切又完好如初 😋</p>
 
       
     </div>
