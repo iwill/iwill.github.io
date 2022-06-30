@@ -43,7 +43,7 @@
     h1#background {
         z-index: -1;
         position: absolute;
-        font-size: 20vh;
+        font-size: 16vh;
         margin-left: 2vw;
     }
     h1#background:after { /* disable browser finding by pseudo element */
@@ -67,11 +67,26 @@
     }
     
     /*
+    BUG:
+    1. `var`
+    ```
+    a:  1 //  1
+    b: -2 // -1, should be -2
+    ```
+    2. `fun`
+    ```
+    a: 100      // 100
+    f(a): a + 1
+    f(1)        // 101, should be 2
+    ```
+    
     TODO:
+    0. `disable browser finding by pseudo element` for #output
     1. calculation performance
     2. prevent find in hidden
     3. ???: js: eval( value = function() { `let t = 0; for (let i = 1; i <= 12; i++) t += i; return t;` }() );
     4. ???: ignore trailing + - * / ((( ...
+    5. ???: display # comments in the res
     n. layout
     #see http://www.ruanyifeng.com/blog/2020/08/five-css-layouts-in-one-line.html
     .container {
@@ -296,7 +311,7 @@
                 
                 /// validate
                 // symbols
-                if (/[\[\]\{\}'"\\;]/g.test(code)) {
+                if (/[\[\]'"\\;]/g.test(code)) {
                     throw "invalid symbol in `" + line + "`";
                 }
                 // `dot [spaces] (word-start) (no-number) words (word-end) [spaces] left-parenthesis` // `.xx(`
@@ -309,10 +324,10 @@
                 let variable;
                 
                 /// find `function`
-                // `fun([arg0[, argN]*]?):`
+                // `fun({?[arg0[, argN]*]?}?):` // supports roro args https://www.tinyblog.dev/blog/2020-07-13-javascript-roro-pattern/
                 // let regExp = /^(?<name>[A-z_][A-z0-9_]*)\s*(?<args>\((\s*[A-z_][A-z0-9_]*\s*(,\s*[A-z_][A-z0-9_]*\s*)*)?\))\:/;
                 // tagged templates:
-                // #see https://stackoverflow.com/questions/12317049/how-to-split-a-long-regular-expression-into-multiple-lines-in-javascript
+                // #see https://stackoverflow.com/questions/12317049/how-to-split-a-long-regular-expression-into-multiple-lines-in-javascript/12317105#12317105
                 // #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
                 let makeRegExp = (regExp, opts) => new RegExp(regExp.raw[0].replace(/\s/mg, ""), opts || "");
                 // `[A-z_][A-z0-9_]*` == `\b(?!\d)\w+\b`
@@ -320,12 +335,12 @@
                     ^ \s*
                     (?<name> [A-z_][A-z0-9_]* ) \s*
                     (?<args>
-                        \( \s*
+                        \(\s* \{? \s*
                         (
                                   [A-z_][A-z0-9_]* \s*
                             (,\s* [A-z_][A-z0-9_]* \s* )*
                         )?
-                        \)
+                        \}?\s* \)
                     ) \s*
                     \:
                 `; // `${"img"}`
@@ -333,7 +348,7 @@
                 if (funcRes) {
                     funcName = funcRes.groups.name;
                     if (Math[funcName]) {
-                        throw "ivalid func in `" + line + "`";
+                        throw "invalid function def in `" + line + "`";
                     }
                     funcArgs = funcRes.groups.args;
                     code = code.slice(funcRes.index + funcRes[0].length).trim();
@@ -345,7 +360,7 @@
                 if (varRes) {
                     variable = varRes[0].slice(0, -1).trim();
                     if (Math[variable]) {
-                        throw "ivalid variable in `" + line + "`";
+                        throw "invalid variable def in `" + line + "`";
                     }
                     code = code.slice(varRes.index + varRes[0].length).trim();
                 }
@@ -355,7 +370,7 @@
                 code = code.replace(/[A-z_][A-z0-9_]*\s*(?=\()/g, function(name) {
                     name = name.trim();
                     if ((!functions[name] && !Math[name]) || ["prototype", "toSource", "valueOf"].includes(name)) {
-                        throw "invalid function in `" + line + "`";
+                        throw "invalid function call in `" + line + "`";
                     }
                     return functions[name] && !Math[name] ? ("functions." + name) : name;
                 });
@@ -470,7 +485,7 @@
                     throw "invalid expression in `" + line + "`";
                 }
                 
-                console.log(value ? ([code, "=", (display || value)].join(" ")) : ([code, comment].join(" ").trim() || "<empty-line>"));
+                console.log(value ? [code, (display || value)].join(" = ") : ([code, comment].join(" ").trim() || "<empty-line>"));
             }
             catch(e) {
                 console.warn(e);

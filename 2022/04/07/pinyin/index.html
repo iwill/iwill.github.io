@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | i&#39;m iwill</title>
+  <title>汉语拼音的拆分 | i&#39;m iwill</title>
   <meta name="author" content="iwill">
   
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+  <meta name="description" content="最近工作中有个需求要拆分连续的汉语拼音，例如将 &amp;quot;masike&amp;quot; 拆分成 [&amp;quot;ma&amp;quot;, &amp;quot;si&amp;quot;, &amp;quot;ke&amp;quot;]。代码很少、效果不错，记录一下拆分的思路和实现，并附赠高质量汉语拼音表一张。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Hello World"/>
+  <meta property="og:title" content="汉语拼音的拆分"/>
   <meta property="og:site_name" content="i&#39;m iwill"/>
 
   
@@ -54,38 +54,58 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-08-28T10:14:42.000Z"><a href="/2015/08/28/hello-world/">2015-08-28</a></time>
+        <time datetime="2022-04-07T04:48:10.000Z"><a href="/2022/04/07/pinyin/">2022-04-07</a></time>
       
       
   
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">汉语拼音的拆分</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="http://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="http://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="http://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+        <p>最近工作中有个需求要拆分连续的汉语拼音，例如将 <code>&quot;masike&quot;</code> 拆分成 <code>[&quot;ma&quot;, &quot;si&quot;, &quot;ke&quot;]</code>。代码很少、效果不错，记录一下拆分的思路和实现，并附赠高质量汉语拼音表一张。</p>
 <span id="more"></span>
 
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="http://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="http://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="http://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="http://hexo.io/docs/deployment.html">Deployment</a></p>
-
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
+<li>拆分汉语姓名拼音</li>
+<li>数据来源可靠，不做正确性校验</li>
+<li>数据来源没有使用隔音符号，不可避免地会有歧义</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="汉语拼音表"><a href="#汉语拼音表" class="headerlink" title="汉语拼音表"></a>汉语拼音表</h3><p>怎么给孩子用呢，误人子弟啊！</p>
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><ul>
+<li>声母、韵母</li>
+<li>独立使用的韵母：<ul>
+<li>可独立使用的韵母</li>
+<li>只能独立使用的韵母</li>
+</ul>
+</li>
+<li>独立使用的声母、韵母导致的歧义：<ul>
+<li>独立使用的声母 —— 不拆分：shan: shan &#x2F; sha n</li>
+<li>无处安放的有歧义的声母&#x2F;韵母后缀 —— 尽量作为声母：shangao: shan gao &#x2F; shang ao</li>
+<li>有歧义的韵母 —— 不拆分：piao: piao &#x2F; pi ao &#x2F; pia o &#x2F; pi a o</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>零声母：独立成音节的韵母，y、w 开头除外</p>
+</blockquote>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ul>
+<li>明确的声母批量拆分</li>
+<li>不确定的，从后向前贪婪模式拆分</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3>
       
     </div>
     <footer>
       
         
         
+  
+  <div class="tags">
+    <a href="/tags/pinyin-js/">pinyin, js</a>
+  </div>
+
         
       
       <div class="clearfix"></div>
