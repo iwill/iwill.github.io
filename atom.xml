@@ -6,7 +6,7 @@
   <link href="https://iwill.im/atom.xml" rel="self"/>
   
   <link href="https://iwill.im/"/>
-  <updated>2022-04-07T10:26:26.835Z</updated>
+  <updated>2022-06-30T03:56:28.046Z</updated>
   <id>https://iwill.im/</id>
   
   <author>
@@ -15,6 +15,21 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>版本号比较</title>
+    <link href="https://iwill.im/2022/06/30/semver-comparison/"/>
+    <id>https://iwill.im/2022/06/30/semver-comparison/</id>
+    <published>2022-06-30T03:55:58.000Z</published>
+    <updated>2022-06-30T03:56:28.046Z</updated>
+    
+    
+    
+    
+    
+    <category term="js, swift, objc, ruby" scheme="https://iwill.im/tags/js-swift-objc-ruby/"/>
+    
+  </entry>
   
   <entry>
     <title>汉语拼音的拆分</title>
