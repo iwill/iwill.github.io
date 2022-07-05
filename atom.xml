@@ -6,7 +6,7 @@
   <link href="https://iwill.im/atom.xml" rel="self"/>
   
   <link href="https://iwill.im/"/>
-  <updated>2022-06-30T03:56:28.046Z</updated>
+  <updated>2022-04-07T04:51:15.505Z</updated>
   <id>https://iwill.im/</id>
   
   <author>
@@ -15,40 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>版本号比较</title>
-    <link href="https://iwill.im/2022/06/30/semver-comparison/"/>
-    <id>https://iwill.im/2022/06/30/semver-comparison/</id>
-    <published>2022-06-30T03:55:58.000Z</published>
-    <updated>2022-06-30T03:56:28.046Z</updated>
-    
-    
-    
-    
-    
-    <category term="js, swift, objc, ruby" scheme="https://iwill.im/tags/js-swift-objc-ruby/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>汉语拼音的拆分</title>
-    <link href="https://iwill.im/2022/04/07/pinyin/"/>
-    <id>https://iwill.im/2022/04/07/pinyin/</id>
-    <published>2022-04-07T04:48:10.000Z</published>
-    <updated>2022-04-07T10:26:26.835Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近工作中有个需求要拆分连续的汉语拼音，例如将 <code>&quot;masike&quot;</code> 拆分成 <code>[&quot;ma&quot;, &quot;si&quot;, &quot;ke&quot;]</code>。代码很少、效果不错，记录一下拆分的思路和实现，并附赠高质量汉语拼音表一张。</p><span id="more"></span><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul><li>拆分汉语姓名拼音</li><li>数据来源可靠，不做正确性校验</li><li>数据来源没有使用隔音符号，不可避免地会有歧义</li></ul><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="汉语拼音表"><a href="#汉语拼音表" class="headerlink" title="汉语拼音表"></a>汉语拼音表</h3><p>怎么给孩子用呢，误人子弟啊！</p><h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><ul><li>声母、韵母</li><li>独立使用的韵母：<ul><li>可独立使用的韵母</li><li>只能独立使用的韵母</li></ul></li><li>独立使用的声母、韵母导致的歧义：<ul><li>独立使用的声母 —— 不拆分：shan: shan &#x2F; sha n</li><li>无处安放的有歧义的声母&#x2F;韵母后缀 —— 尽量作为声母：shangao: shan gao &#x2F; shang ao</li><li>有歧义的韵母 —— 不拆分：piao: piao &#x2F; pi ao &#x2F; pia o &#x2F; pi a o</li></ul></li></ul><blockquote><p>零声母：独立成音节的韵母，y、w 开头除外</p></blockquote><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ul><li>明确的声母批量拆分</li><li>不确定的，从后向前贪婪模式拆分</li></ul><h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;最近工作中有个需求要拆分连续的汉语拼音，例如将 &lt;code&gt;&amp;quot;masike&amp;quot;&lt;/code&gt; 拆分成 &lt;code&gt;[&amp;quot;ma&amp;quot;, &amp;quot;si&amp;quot;, &amp;quot;ke&amp;quot;]&lt;/code&gt;。代码很少、效果不错，记录一下拆分的思路和实现，并附赠高质量汉语拼音表一张。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="pinyin, js" scheme="https://iwill.im/tags/pinyin-js/"/>
-    
-  </entry>
   
   <entry>
     <title>JavaScript 定义 class 的方式</title>
