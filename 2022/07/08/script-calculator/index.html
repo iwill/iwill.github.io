@@ -9,8 +9,8 @@
   <meta name="description" content="ScriptCalculator: https://iwill.im/static/ScriptCalculator.htmlGitHub Repo: https://github.com/iwill/ScriptCalculator
 
 ScriptCalculator 是我为了满足个人需求开发的一款计算器。
-最初的需求是想保留计算过程、可以看到中间结果，可以随时修改数据和计算逻辑，计算结果实时更新，必要的地方有文字说明。但找了好久，好像没有哪个计算器能满足，所以只能用代码了。
-开始我用 Chrome 控制台写 JavaScript 比较多，问题是输入不方便、输出结果也不直观，要在文本编辑器和控制台之间来回拷贝代码和计算结果。Swift Playgrounds 的结果展示很友好，但代码里多少还是夹杂了数据之外的东西，还要要操心数据类型，而且开 Xcode 也不是很轻量。所以不得不动手解决一下了。
+最初的需求是想保留计算过程、能展示中间结果，能随时修改数据和计算逻辑，计算结果实时更新，必要的地方可以加备注。我觉得是很正常的需求，但找了好久就没发现哪个计算器能满足，所以只能写代码计算。
+开始我用 Chrome 控制台写 JavaScript 比较多，问题是输入不方便、输出结果也不直观，要在文本编辑器和控制台之间来回拷贝代码和计算结果。Swift Playgrounds 的结果展示很友好，但代码里多少还是夹杂了数据之外的东西，还要要操心数据类型，而且 Xcode 也不是很轻量。气氛烘托到位，是时候出手了。
 基本思路是解析输入的计算脚本，做必要的预处理，然后用 JavaScript 的 eval() 完成计算，模仿 Swift Playgrounds 输出结果。后来又边用边迭代，逐步支持了自定义变量和函数、折行和加注释、百分数和各种进制、位运算和布尔值，以及通过 URL 分享计算脚本等丰富的特性。
 脚本语法简洁、功能强大，充分地利用了 JavaScript 语言的多种特性。（至少我自己）用起来非常顺手，舒坦！">
   
@@ -74,8 +74,8 @@ ScriptCalculator 是我为了满足个人需求开发的一款计算器。
 <p>ScriptCalculator: <a href="https://iwill.im/static/ScriptCalculator.html">https://iwill.im/static/ScriptCalculator.html</a><br /><br>GitHub Repo: <a target="_blank" rel="noopener" href="https://github.com/iwill/ScriptCalculator">https://github.com/iwill/ScriptCalculator</a></p>
 </blockquote>
 <p><a href="https://iwill.im/static/ScriptCalculator.html">ScriptCalculator</a> 是我为了满足个人需求开发的一款计算器。</p>
-<p>最初的需求是想保留计算过程、可以看到中间结果，可以随时修改数据和计算逻辑，计算结果实时更新，必要的地方有文字说明。但找了好久，好像没有哪个计算器能满足，所以只能用代码了。</p>
-<p>开始我用 Chrome 控制台写 JavaScript 比较多，问题是输入不方便、输出结果也不直观，要在文本编辑器和控制台之间来回拷贝代码和计算结果。Swift Playgrounds 的结果展示很友好，但代码里多少还是夹杂了数据之外的东西，还要要操心数据类型，而且开 Xcode 也不是很轻量。所以不得不动手解决一下了。</p>
+<p>最初的需求是想保留计算过程、能展示中间结果，能随时修改数据和计算逻辑，计算结果实时更新，必要的地方可以加备注。我觉得是很正常的需求，但找了好久就没发现哪个计算器能满足，所以只能写代码计算。</p>
+<p>开始我用 Chrome 控制台写 JavaScript 比较多，问题是输入不方便、输出结果也不直观，要在文本编辑器和控制台之间来回拷贝代码和计算结果。Swift Playgrounds 的结果展示很友好，但代码里多少还是夹杂了数据之外的东西，还要要操心数据类型，而且 Xcode 也不是很轻量。气氛烘托到位，是时候出手了。</p>
 <p>基本思路是解析输入的计算脚本，做必要的预处理，然后用 JavaScript 的 <code>eval()</code> 完成计算，模仿 Swift Playgrounds 输出结果。后来又边用边迭代，逐步支持了自定义变量和函数、折行和加注释、百分数和各种进制、位运算和布尔值，以及通过 URL 分享计算脚本等丰富的特性。</p>
 <p>脚本语法简洁、功能强大，充分地利用了 JavaScript 语言的多种特性。（至少我自己）用起来非常顺手，舒坦！</p>
 <span id="more"></span>
