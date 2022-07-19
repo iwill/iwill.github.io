@@ -596,8 +596,7 @@
     };
     
     function updateStyle() {
-        $script.style.textDecoration = $underline.checked ? "underline" : null;
-        "underline"
+        $script.classList[$underline.checked ? "add" : "remove"]("underline");
     }
     
     function underlineChange(event, target) {
