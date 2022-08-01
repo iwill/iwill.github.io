@@ -95,7 +95,7 @@ ScriptCalculator 是我为了满足个人需求开发的一款计算器。
 <li>函数支持 RORO 形式参数</li>
 </ul>
 </li>
-<li>JavaScript 代码块</li>
+<li>JavaScript 表达式和代码块</li>
 <li>折行和注释</li>
 <li>通过 URL 分享计算脚本</li>
 </ul>
@@ -239,7 +239,10 @@ ScriptCalculator 是我为了满足个人需求开发的一款计算器。
 <blockquote>
 <p><a href="https://iwill.im/static/ScriptCalculator.html#%7B%22script%22%3A%22add(%7B%20a%2C%20b%20%7D)%3A%20a%20%2B%20b%5Cnadd(%7B%20a%3A%204%2C%20b%3A%205%20%7D)%20%2F%2F%209%5Cn%22%2C%22selection%22%3A%7B%22start%22%3A46%2C%22end%22%3A46%7D%7D">try it yourself</a></p>
 </blockquote>
-<h3 id="JavaScript-代码块"><a href="#JavaScript-代码块" class="headerlink" title="JavaScript 代码块"></a>JavaScript 代码块</h3><p>尽管 ScriptCalculator 已足够强大，但有时仍然无法满足复杂的需求。例如在自定义函数内使用临时变量、数组、对象甚至正则，以及步骤复杂的计算逻辑。为了避免重返 Chrome 控制台，ScriptCalculator 支持内嵌 JavaScript 代码块。</p>
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>尽管 ScriptCalculator 已足够强大，但有时仍然无法满足复杂的需求。例如在自定义函数内使用临时变量、数组、对象甚至正则，以及步骤复杂的计算逻辑。为了避免重返 Chrome 控制台，ScriptCalculator 支持内嵌 JavaScript 表达式和代码块。</p>
+<p>JavaScript 表达式可以直接内嵌到算式当中：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">1 </span>+ `<span class="string">&quot;x&quot;</span>.length`</span><br></pre></td></tr></table></figure>
+
 <p>JavaScript 代码块中可以编写计算代码，在末尾用 <code>return</code> 返回结果：</p>
 <figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```js</span><br><span class="line">let<span class="built_in"> array </span>= [1, 2, 3];<span class="built_in"></span></span><br><span class="line"><span class="built_in">return </span>array.length;</span><br><span class="line">``` // 3</span><br></pre></td></tr></table></figure>
 
