@@ -86,6 +86,7 @@
     #left {
         width: calc(100% - var(--right-width) - var(--space-l));
         margin: 0;
+        position: relative;
     }
     .container {
         height: calc(100% - var(--top-height) - var(--space) * 2);
@@ -94,6 +95,31 @@
         line-height: 0;
     }
     
+    #ruler {
+        position: absolute;
+        right: 0px;
+        top: 0;
+        border-width: 0;
+        margin: 0;
+        width: 1px;
+        height: 100%;
+        background-color: gray;
+        opacity: 0.1;
+    }
+    #rulerHelper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        /* one side padding and border for calculating caret position */
+        padding-right: var(--space);
+        border-right-style: solid;
+        border-right-width: 1px;
+        line-height: 15px;
+        white-space: pre;
+        word-wrap: normal; /* for Safari */
+        overflow-x: scroll;
+        opacity: 0;
+    }
     #script {
         text-align: right;
     }
@@ -123,8 +149,7 @@
         padding: 0;
         resize: none;
         border-style: none;
-        background-color: transparent;
-        color: transparent;
+        opacity: 0;
     }
     .code {
         width: 100%;
@@ -188,6 +213,8 @@
         </div>
     </div>
     <div id="left" class="container">
+        <hr id="ruler" />
+        <pre id="rulerHelper"></pre>
         <textarea id="script" class="code" oninput="sthChanged(event, this)" onkeydown="shortcutsTriggered(event, this)" onblur="focusChanged(event, this)" onscroll="scrollingChanged(event, this)"></textarea>
     </div>
     <div id="right" class="container">
@@ -343,6 +370,9 @@
     }
     
     let $left = document.querySelector("#left");
+    let $ruler = document.querySelector("#ruler");
+    let $rulerHelper = document.querySelector("#rulerHelper");
+    $rulerHelper.remove();
     let $script = $left.querySelector("#script");
     
     let $right = document.querySelector("#right");
@@ -715,9 +745,35 @@
         document.documentElement.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
     });}
     
-    function updateStyle() {
+    function updateScriptStyle() {
         $script.classList[$underline.checked ? "add" : "remove"]("underline");
-    };
+    }
+    
+    function updateBorderStyle() {
+        let urlTooLoong = location.href.length > 65536;
+        $script.style.outlineColor = $result.style.outlineColor = (urlTooLoong ? "red" : null);
+        if (urlTooLoong) {
+            console.error(`url is too loong: ${location.href.length}!`);
+        }
+    }
+    
+    function updateRuler() {
+        let script = $script.value;
+        let start = $script.selectionStart;
+        let end = script.indexOf("\n", start);
+        if (end < 0) {
+            end = script.length;
+        }
+        $rulerHelper.innerText = script.slice(start, end);
+        $left.appendChild($rulerHelper);
+        let width = $rulerHelper.offsetWidth;
+        let space = (parseFloat(window.getComputedStyle($script).getPropertyValue("padding-right"))
+            + parseFloat(window.getComputedStyle($script).getPropertyValue("border-right-width")));
+        $ruler.style.visibility = width <= space ? "hidden" : "visible";
+        // `+ 1` (caret width) to avoid overlapping the ruler and caret
+        $ruler.style.right = Math.ceil(width + 1) + "px"
+        $rulerHelper.remove();
+    }
     
     let jsSerializeToHash = false;
     
@@ -739,16 +795,11 @@
                 end: $script.selectionEnd
             };
         }
-        let hash = Object.keys(json).length ? encodeURIComponent(JSON.stringify(json)) : "";
+        let hash = Object.keys(json).length ? `#${encodeURIComponent(JSON.stringify(json))}` : "";
         if (location.hash != hash) {
             jsSerializeToHash = true;
-            location.hash = hash;
-            // DONOT reset `jsSerializeToHash` here
-            let urlTooLoong = location.href.length > 65536;
-            $script.style.outlineColor = $result.style.outlineColor = (urlTooLoong ? "red" : null);
-            if (urlTooLoong) {
-                console.error(`url is too loong: ${location.href.length}!`);
-            }
+            location.hash = hash; // !!!: DONOT reset `jsSerializeToHash` here
+            updateBorderStyle();
         }
     });}
     
@@ -769,7 +820,8 @@
             $roundingMethod.selectedIndex = json.roundingMethod || 0;
             $roundingMethod.disabled = ($decimalPlaces.selectedIndex == 0);
             $underline.checked = json.underline;
-            updateStyle();
+            updateScriptStyle();
+            updateBorderStyle();
             $script.value = json.script || "";
             if (json.selection) {
                 $script.setSelectionRange(json.selection.start, json.selection.start);
@@ -784,6 +836,7 @@
     
     globalThis.sthChanged = function sthChanged(event, target) { debugFunc(arguments, target.id);
         $roundingMethod.disabled = ($decimalPlaces.selectedIndex == 0);
+        updateRuler();
         clearTimeout(calculateTimeoutID);
         calculateTimeoutID = setTimeout(function _sthChanged() {
             calculate();
@@ -799,7 +852,7 @@
     };
     
     globalThis.underlineChanged = function underlineChanged(event, target) {
-        updateStyle();
+        updateScriptStyle();
         serializeToHash(); // need not timeout
     };
     
@@ -808,7 +861,7 @@
         // $fixedPoint.selectedIndex = 0;
         $roundingMethod.selectedIndex = 0;
         $underline.checked = false;
-        updateStyle();
+        updateScriptStyle();
         sthChanged(null, target);
     };
     
@@ -858,6 +911,7 @@
             return;
         }
         debugFunc(arguments);
+        updateRuler();
         clearTimeout(serializeTimeoutID);
         serializeTimeoutID = setTimeout(function _selectionchange() {
             serializeToHash();
