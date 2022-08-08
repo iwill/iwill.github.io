@@ -169,6 +169,7 @@
     }
     #result {
         padding-left: calc(var(--ln-width) + var(--space));
+        overflow-x: hidden;
     }
     #lineNumber {
         pointer-events: none;
@@ -437,7 +438,7 @@
         }, ...] */
         let result = [], lineNumber = [], output = [];
         let vals = [], vars = {}, funcs = {};
-        let multiLines = "", jsPrefix = "", jsBlock = undefined;
+        let multiLines = "", jsPrefix = "", jsBlock;
         let lines = script.split("\n");
         for (let ln = 0; ln < lines.length; ln++) { let line = lines[ln]; debugGroup(`#${ln} \`${line}\``, function() {
             
@@ -495,11 +496,12 @@
                         if (jsStarts) {
                             throw `invalid symbol in \`${line}\``;
                         }
-                        jsBlock += code;
+                        jsBlock += "\t" + code;
                         code = "";
                     }
                     else { // if (jsEnds)
-                        code = jsPrefix + jsBlock + code.replace(/```$/, "");
+                        code = jsPrefix + jsBlock + "\t" + code.replace(/```$/, "");
+                        jsPrefix = "";
                         jsBlock = undefined;
                         jsCode = true;
                     }
@@ -515,7 +517,7 @@
                         });
                         
                         /// replace single = with ==
-                        code = code.replace(/(^|[^<!=>])=(?!=)/g, "$1==");
+                        code = code.replace(/^[^<!=>]?=(?!=)/mg, "==");
                         
                         /// validate symbols
                         if (/['"`\\\[\];]/g.test(code)) {
@@ -656,17 +658,27 @@
                     }
                     console.log(`eval: ${js}`.replace(/%/g, "%%"));
                     let res = new Function("funcs", "vars", "vals", `"use strict"; ${js}`)(funcs, vars, vals);
+                    
                     if (funcName) {
                         funcs[funcName] = res;
                     }
                     else {
                         value = res;
-                        // !!!: DEPRECATED
                         if (typeof value == "function") {
-                            if (value.name) {
-                                funcs[value.name] = value;
+                            if (varName) {
+                                funcName = varName;
+                                funcArgs = "(...)";
+                                funcs[funcName] = value;
+                                varName = undefined;
                                 value = undefined;
-                                throw "DEPRECATED"
+                            }
+                            // !!!: DEPRECATED
+                            else if (value.name) {
+                                funcName = value.name;
+                                funcArgs = "(...)";
+                                funcs[funcName] = value;
+                                value = undefined;
+                                throw "DEPRECATED: defining func via func name is deprecated"
                             }
                         }
                     }
@@ -741,11 +753,17 @@
             }
             catch(e) {
                 console.warn((e + "").replace(/%/g, "%%"));
-                value = e == "DEPRECATED" ? "DEPRECATED" : "ERROR";
+                if (vars._enable_error) {
+                    value = `${e}`.startsWith("DEPRECATED") ? e : "ERROR: " + e;
+                }
+                else {
+                    value = `${e}`.startsWith("DEPRECATED") ? "DEPRECATED" : "ERROR";
+                }
             }
             
             /// result
             result.push(display || value);
+            let text;
             if (["number", "boolean"].includes(typeof value)) {
                 vals.push(value);
                 vars.$ = value;
@@ -753,19 +771,20 @@
                     vars[varName] = value;
                 }
                 lineNumber.push(vals.length - 1);
-                output.push(`${code.replace(/\s*funcs\.\s*/g, "")} = ${display || value} ${comment || ""}`.trim());
+                text = `${code.replace(/\s*funcs\.\s*/g, "")} = ${display || value} ${comment || ""}`;
             }
             else {
                 lineNumber.push("·");
-                output.push(funcName ? `${funcName}${funcArgs}: ${code} ${comment || ""}`.trim() : comment);
+                text = funcName ? `${funcName}${funcArgs}: ${code} ${comment || ""}` : comment;
             }
+            output.push(text?.trim().replace(/ ?\t/g, " \\\n"));
         });}
         
         /// output
         // let fixed = result.map((name, index) => name ? Number(name).toFixed(2) : name);
         $result.value = result.join("\n");
         $lineNumber.value = lineNumber.join("\n");
-        $output.value = output.join("\n");
+        $output.value = output.join("\n").replace(/^ +(?=\\$)/mg, "").replace(/\n{3,}/g, "\n\n");
         
         let lnLength = vals.length.toString().length;
         document.documentElement.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
