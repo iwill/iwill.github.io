@@ -517,7 +517,7 @@
                         });
                         
                         /// replace single = with ==
-                        code = code.replace(/^[^<!=>]?=(?!=)/mg, "==");
+                        code = code.replace(/(^|[^<!=>])=(?!=)/g, "$1==");
                         
                         /// validate symbols
                         if (/['"`\\\[\];]/g.test(code)) {
