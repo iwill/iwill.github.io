@@ -1,72 +1,169 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang=en>
 <head>
-  <meta charset="utf-8">
-  
-  <title>升级 Hexo | i&#39;m iwill</title>
-  <meta name="author" content="iwill">
-  
-  <meta name="description" content="2014 年搭建了博客，然后就没再写 🤪
-博客被我用来发布一个非常强大的程序员专用计算器 ScriptCalculator，详细介绍看这里 GitHub。
-刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 Hexo (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 博客，这里记录一下，以备多年后再次升级用 🙈">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="2014 年搭建了博客，然后就没再写 🤪 博客被我用来发布一个非常强大的程序员专用计算器 ScriptCalculator，详细介绍看这里 GitHub。 刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 Hexo (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 博客，这里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="升级 Hexo">
+<meta property="og:url" content="https://iwill.im/2022/02/09/updating-hexo/index.html">
+<meta property="og:site_name" content="i&#39;m iwill">
+<meta property="og:description" content="2014 年搭建了博客，然后就没再写 🤪 博客被我用来发布一个非常强大的程序员专用计算器 ScriptCalculator，详细介绍看这里 GitHub。 刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 Hexo (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 博客，这里">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-09T13:46:17.000Z">
+<meta property="article:modified_time" content="2022-02-09T14:46:32.000Z">
+<meta property="article:author" content="iwill">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          
+            <link rel="shortcut icon" href="https://www.gravatar.com/avatar/02402cd5f51e73cc0b8fbfac07165612?s=48">
+          
+        
+      
+      
+        
+          
+            <link rel="icon" type="image/png" href="https://www.gravatar.com/avatar/02402cd5f51e73cc0b8fbfac07165612?s=192" sizes="192x192">
+          
+        
+      
+      
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="https://www.gravatar.com/avatar/02402cd5f51e73cc0b8fbfac07165612?s=180">
+          
+        
+      
+    
+    <!-- title -->
+    <title>升级 Hexo</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <meta property="og:title" content="升级 Hexo"/>
-  <meta property="og:site_name" content="i&#39;m iwill"/>
-
-  
-    <meta property="og:image" content=""/>
-  
-
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="i&#39;m iwill" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="i&#39;m iwill" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
 <meta name="generator" content="Hexo 6.0.0"></head>
 
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/iwill">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/04/07/class-js/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2015/08/28/hello-world/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://iwill.im/2022/02/09/updating-hexo/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://iwill.im/2022/02/09/updating-hexo/&text=升级 Hexo"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://iwill.im/2022/02/09/updating-hexo/&is_video=false&description=升级 Hexo"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=升级 Hexo&body=Check out this article: https://iwill.im/2022/02/09/updating-hexo/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://iwill.im/2022/02/09/updating-hexo/&name=升级 Hexo&description=&lt;p&gt;2014 年搭建了博客，然后就没再写 🤪&lt;/p&gt;
+&lt;p&gt;博客被我用来发布一个非常强大的程序员专用计算器 &lt;a href=&#34;/static/ScriptCalculator.html&#34;&gt;ScriptCalculator&lt;/a&gt;，详细介绍看这里 &lt;a href=&#34;https://github.com/iwill/ScriptCalculator&#34;&gt;GitHub&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 &lt;a href=&#34;https://alanlee.fun/2021/02/28/hexo-empty-html/&#34;&gt;Hexo&lt;/a&gt; (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 &lt;a href=&#34;https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/&#34;&gt;博客&lt;/a&gt;，这里记录一下，以备多年后再次升级用 🙈&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://iwill.im/2022/02/09/updating-hexo/&t=升级 Hexo"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-<body>
-  <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">i&#39;m iwill</a></h1>
-  <h2><a href="/">https://iwill.im/</a></h2>
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
 </div>
-<nav id="main-nav" class="alignright">
-  <ul>
+
     
-      <li><a href="/">Home</a></li>
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
     
-      <li><a href="/archives">Archives</a></li>
-    
-      <li><a href="/about">About</a></li>
-    
-      <li><a href="/atom.xml">RSS</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
-</nav>
-<div class="clearfix"></div></header>
-  <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
-  
-  <div class="post-content">
-    <header>
+    <h1 class="posttitle" itemprop="name headline">
+        升级 Hexo
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">iwill</span>
+      </span>
       
-        <div class="icon"></div>
-        <time datetime="2022-02-09T13:46:17.000Z"><a href="/2022/02/09/updating-hexo/">2022-02-09</a></time>
+    <div class="postdate">
       
+        <time datetime="2022-02-09T13:46:17.000Z" itemprop="datePublished">2022-02-09</time>
+        
+        (Updated: <time datetime="2022-02-09T14:46:32.000Z" itemprop="dateModified">2022-02-09</time>)
+        
       
-  
-    <h1 class="title">升级 Hexo</h1>
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/blog/" rel="tag">blog</a>, <a class="tag-link-link" href="/tags/hexo/" rel="tag">hexo</a>
+    </div>
+
+
+    </div>
+  </header>
   
 
-    </header>
-    <div class="entry">
-      
-        <p>2014 年搭建了博客，然后就没再写 🤪</p>
+  <div class="content" itemprop="articleBody">
+    <p>2014 年搭建了博客，然后就没再写 🤪</p>
 <p>博客被我用来发布一个非常强大的程序员专用计算器 <a href="/static/ScriptCalculator.html">ScriptCalculator</a>，详细介绍看这里 <a target="_blank" rel="noopener" href="https://github.com/iwill/ScriptCalculator">GitHub</a>。</p>
 <p>刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 <a target="_blank" rel="noopener" href="https://alanlee.fun/2021/02/28/hexo-empty-html/">Hexo</a> (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 <a target="_blank" rel="noopener" href="https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/">博客</a>，这里记录一下，以备多年后再次升级用 🙈</p>
 <span id="more"></span>
@@ -84,103 +181,162 @@
 
 <p>然后，一切又完好如初 😋</p>
 
-      
-    </div>
-    <footer>
-      
-        
-        
-  
-  <div class="tags">
-    <a href="/tags/hexo/">hexo</a>, <a href="/tags/blog/">blog</a>
-  </div>
-
-        
-      
-      <div class="clearfix"></div>
-    </footer>
   </div>
 </article>
 
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
 
-<section id="comment">
-  <h1 class="title">Comments</h1>
 
-  
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/iwill">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://iwill.im/2022/02/09/updating-hexo/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://iwill.im/2022/02/09/updating-hexo/&text=升级 Hexo"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://iwill.im/2022/02/09/updating-hexo/&is_video=false&description=升级 Hexo"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=升级 Hexo&body=Check out this article: https://iwill.im/2022/02/09/updating-hexo/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://iwill.im/2022/02/09/updating-hexo/&title=升级 Hexo"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://iwill.im/2022/02/09/updating-hexo/&name=升级 Hexo&description=&lt;p&gt;2014 年搭建了博客，然后就没再写 🤪&lt;/p&gt;
+&lt;p&gt;博客被我用来发布一个非常强大的程序员专用计算器 &lt;a href=&#34;/static/ScriptCalculator.html&#34;&gt;ScriptCalculator&lt;/a&gt;，详细介绍看这里 &lt;a href=&#34;https://github.com/iwill/ScriptCalculator&#34;&gt;GitHub&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;刚刚更新了个小功能，结果发现 Hexo 部署后博客页面都变空白了，原因是 &lt;a href=&#34;https://alanlee.fun/2021/02/28/hexo-empty-html/&#34;&gt;Hexo&lt;/a&gt; (3.9.0) 版本太低，与 Node (17.4.0) 不匹配，所以肯定要升级 Hexo 了。居然挺麻烦的，又没找到官方文档，还好找到了个靠谱的 &lt;a href=&#34;https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/&#34;&gt;博客&lt;/a&gt;，这里记录一下，以备多年后再次升级用 🙈&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://iwill.im/2022/02/09/updating-hexo/&t=升级 Hexo"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
   </div>
-  
-</section>
-
-</div></div>
-    <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
-    <input type="hidden" name="q" value="site:iwill.im">
-  </form>
 </div>
 
-  
-
-  
-<div class="widget tag">
-  <h3 class="title">Tags</h3>
-  <ul class="entry">
-  
-    <li><a href="/tags/blog/">blog</a><small>2</small></li>
-  
-    <li><a href="/tags/calculator/">calculator</a><small>1</small></li>
-  
-    <li><a href="/tags/class/">class</a><small>1</small></li>
-  
-    <li><a href="/tags/domain/">domain</a><small>1</small></li>
-  
-    <li><a href="/tags/github-pages/">github-pages</a><small>1</small></li>
-  
-    <li><a href="/tags/hexo/">hexo</a><small>2</small></li>
-  
-    <li><a href="/tags/js/">js</a><small>2</small></li>
-  
-  </ul>
-</div>
-
-</aside>
-    <div class="clearfix"></div>
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2014-2022
+    iwill
   </div>
-  <footer id="footer" class="inner"><div class="alignleft">
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/iwill">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
   
-  &copy; 2022 iwill
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-</div>
-<div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
-<script type="text/javascript">
-var disqus_shortname = 'minglq';
+<script src="/js/main.js"></script>
 
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
-</script>
+<!-- search -->
 
+<!-- Google Analytics -->
 
+<!-- Baidu Analytics -->
 
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'minglq';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
 
 </body>
 </html>
