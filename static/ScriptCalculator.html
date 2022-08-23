@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+    Created by Míng on 2019-11-22.
+    Copyright © 2022 Míng <minglq.9@gmail.com>. Released under the MIT license.
+-->
+<!--
+    
+    BUG:
+    
+    TODO:
+    
+    - remove #underline?
+    - remove #reset?
+    
+    - ewiki shortcuts config, and help
+    
+    - refactor `calculate()` with RORO pattern
+        function find_func(args...) { ... return { name, args }; }
+        let { funcName, funcArgs } = find_func(args...);
+    
+    - test cases: one group per page
+    
+    - performance?
+    
+    - ???: ignore trailing + - * / ((( ...
+    
+    - layout
+        #see http://www.ruanyifeng.com/blog/2020/08/five-css-layouts-in-one-line.html
+        .container {
+            display: grid;
+            grid-template-columns: minmax(150px, 25%) 1fr;
+        }
+    
+    - ???: invalid value
+        fa(a): a
+        fa() // <no-result> - undefined
+        fa(a): a * 1
+        fa() // NaN
+    
+    NOTE:
+    
+    - RexExp:
+        #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet
+        x(?=y)  // lookahead assertion
+        x(?!y)  // negative lookahead assertion
+         (?<=y)x // lookbehind assertion
+         (?<!y)x // negative lookbehind assertion
+    
+-->
+<title>ScriptCalculator by Míng</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- meta name="viewport" content="width=device-width, user-scalable=no" / -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style type="text/css" media="all">
+    /* the root element - https://developer.mozilla.org/en-US/docs/Web/CSS/:root */
+    :root {
+        --margin: 8px;
+        --space-l: 8px;
+        --space: 5px;
+        --top-height: 35px;
+        --right-width: 25%;
+        --ln-width: 20px;
+    }
+    
+    html {
+        box-sizing: border-box;
+        font-family: monospace;
+        font-size: 13px;
+    }
+    *, *:before, *:after {
+        box-sizing: inherit;
+        font-family: inherit;
+        font-size: inherit;
+    }
+    
+    html {
+        min-width: 1024px;
+        min-height: 256px;
+        overflow: scroll;
+        height: 100%;
+        padding: 0;
+    }
+    body {
+        height: calc(100% - var(--margin) * 2);
+        margin: var(--margin);
+        padding: 0;
+        overflow: hidden;
+    }
+    h1#background {
+        z-index: -1;
+        position: absolute;
+        font-size: 16vh;
+        margin-left: 2vw;
+    }
+    h1#background:after { /* disable browser finding by pseudo element */
+        content: "Script-\A Calculator\A by Míng";
+        white-space: pre;
+        color: ghostwhite;
+    }
+    h1#title {
+        display: inline-block;
+        margin: 0;
+    }
+    
+    button {
+        font-size: 12px;
+    }
+    select:disabled {
+        text-decoration: line-through;
+    }
+    input {
+        vertical-align: middle;
+    }
+    a {
+        text-underline-position: under;
+    }
+    
+    .underline {
+        text-decoration: underline;
+        text-underline-position: under;
+    }
+    
+    #right {
+        width: var(--right-width);
+        margin: 0 0 0 var(--space-l);
+        position: relative;
+    }
+    #left {
+        width: calc(100% - var(--right-width) - var(--space-l));
+        margin: 0;
+        position: relative;
+    }
+    .container {
+        height: calc(100% - var(--top-height) - var(--space) * 2);
+        float: left;
+        display: inline-block;
+        line-height: 0;
+    }
+    
+    #ruler {
+        position: absolute;
+        right: 0px;
+        top: 0;
+        border-width: 0;
+        margin: 0;
+        width: 1px;
+        height: 100%;
+        background-color: gray;
+        opacity: 0.1;
+    }
+    #rulerHelper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: revert;
+        height: revert;
+        /* remove left padding and border for calculating caret position */
+        padding-left: 0;
+        border-left-width: 0;
+        opacity: 0;
+    }
+    #script {
+        text-align: right;
+    }
+    #result {
+        padding-left: calc(var(--ln-width) + var(--space));
+        overflow-x: hidden;
+    }
+    #lineNumber {
+        pointer-events: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: var(--ln-width);
+        padding: var(--space) 1px;
+        border-color: transparent;
+        background-clip: padding-box;
+        background-color: #00000008;
+        color: darkgray;
+        text-align: right;
+    }
+    #output { /* cannot copy if display: none; or visibility: hidden; */
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 1px; /* cannot copy if 0 */
+        height: 1px; /* cannot copy if 0 */
+        margin: 0;
+        padding: 0;
+        resize: none;
+        border-style: none;
+        opacity: 0;
+    }
+    .code {
+        width: 100%;
+        height: 100%;
+        resize: none;
+        margin: 0;
+        padding: var(--space);
+        border-style: solid;
+        border-width: 1px;
+        border-color: gray;
+        background-color: transparent;
+        line-height: 15px;
+        white-space: pre;
+        word-wrap: normal; /* for Safari */
+        overflow-x: scroll;
+    }
+    #script::-webkit-scrollbar,
+    #lineNumber::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        background: transparent;
+    }
+</style>
+</head>
+<body>
+    <h1 id="background"></h1>
+    <!-- TODO: overflow: scroll / hide left; -->
+    <div id="top" style="height: var(--top-height); position: relative; overflow-x: scroll;">
+        <div style="position: absolute; left: 0; top: 0; padding: var(--space) 0;">
+            <h1 id="title">ScriptCalculator by <a target="_blank" href="/">Míng</a></h1>
+            [ <a target="_blank" href="https://github.com/iwill/ScriptCalculator">GitHub</a>
+            | <a target="_blank" href="#%7B%22script%22%3A%22%23%20basic%3A%20%2B%2C%20-%2C%20*%2C%20%2F%2C%20%25%2C%20%3D%2C%20(%20and%20)%5Cn%5Cn%23%20variables%3A%20%3Cprevious%3E%2C%20%24%2C%20%24ln%5Cn%5Cn%23%20optional%20spaces%20and%20empty%20lines%5Cn%5Cn%23%20comments%3A%20%23%20and%20%2F%2F%5Cn%5Cn2%20%2B%204%20%2F%2F%202%20%2B%204%20%3D%3D%206%5Cn-%203%20%2F%2F%206%20-%203%20%3D%3D%203%5Cn%2F%2F%20empty%20line%5Cn*%204%20%2F%2F%20%20%20%20%20%20ERROR%5Cn%5Cn%240%20%2F%202%20%2F%2F%20%20%20%203%5Cn%2F%2F%20empty%20line%5Cn10%20%25%20%24%20%20%20%2F%2F%20%20%20%20%201%5Cn%24-1%20%2F%2F%20%20%20%20%201%5Cn%5Cn%23%20percentage%3A%20%25%20if%20it's%20NOT%20followed%20by%20number%2C%20variable%2C%20function%20or%20open%20parenthesis%5Cn%5Cn10%25%20%20%20%20%20%2F%2F%20%200.1%5Cn10%20%25%20%20%20%20%2F%2F%20%200.1%5Cn10%25%20%2B%201%20%2F%2F%20%201.1%5Cn10%25%20%25%201%20%2F%2F%20%200.1%5Cn10%25%20-%207%20%2F%2F%20-6.9%5Cn10%20%25%20(-7)%20%2F%2F%20%203%20%20%5Cn%5Cn%23%20percentage%20conversion%5Cn%5Cn0.1%20%25%25%20%2F%2F%2010%25%5Cn*%202%20%20%20%20%2F%2F%200.2%5Cn%25%25%20%2F%2F%2020%25%5Cn%5Cn%23%20base%2Fradix%20conversion%5Cn%5Cn0b10%20%20%20%2F%2F%202%20%5Cn0o10%20%20%20%2F%2F%208%20%5Cn10%20%20%20%20%20%2F%2F%2010%5Cn0x10%20%20%20%2F%2F%2016%5Cn%5Cn32%20%232%20%20%2F%2F%200b100000%5Cn%238%20%20%2F%2F%200o40%20%20%20%20%5Cn%2310%20%2F%2F%2032%20%20%20%20%20%20%5Cn%2316%20%2F%2F%200x20%20%20%20%20%5Cn%2332%20%2F%2F%2010%20%20%20%20%20%20%5Cn%2336%20%2F%2F%20W%20%20%20%20%20%20%20%5Cn%24%20%20%20%20%20%2F%2F%2032%20%20%20%20%20%20%5Cn%5Cn%23%20bitwise%20operations%5Cn%5Cn%23%20!!!%3A%20JavaScript%20Uses%2032%20bits%20Bitwise%20Operands%5Cn%23%20https%3A%2F%2Fwww.w3schools.com%2Fjs%2Fjs_bitwise.asp%23%3A~%3Atext%3DJavaScript%2520Uses%252032%2520bits%2520Bitwise%2520Operands%5Cn%5Cn1%20%3C%3C%20%200%20%232%20%2F%2F%200b1%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cn1%20%3C%3C%20%201%20%232%20%2F%2F%200b10%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cn1%20%3C%3C%20%202%20%232%20%2F%2F%200b100%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cn1%20%3C%3C%20%204%20%232%20%2F%2F%200b10000%20%20%20%20%20%20%20%20%20%20%20%20%5Cn1%20%3C%3C%20%208%20%232%20%2F%2F%200b100000000%20%20%20%20%20%20%20%20%5Cn1%20%3C%3C%2016%20%232%20%2F%2F%200b10000000000000000%5Cn1%20%3C%3C%2032%20%232%20%2F%2F%200b1%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cn%5Cn%23%20builtin%20variables%20%26%20functions%5Cn%5CnE%20%2F%2F%202.718281828459045%20%5CnPI%20%2F%2F%203.141592653589793%20%5CnGR%20%2F%2F%200.6180339887498949%5Cn%5CnNumber.MAX_SAFE_INTEGER%20%2F%2F%209007199254740991%5Cn%3D%3D%20%20%20%20pow(2%2C%2053)%20-%201%20%20%2F%2F%20true%5CnNumber.MIN_SAFE_INTEGER%20%2F%2F%20-9007199254740991%5Cn%3D%3D%20-%20(pow(2%2C%2053)%20-%201)%20%2F%2F%20true%5Cn%5Cnmin(max(1%2C%202)%2C%203)%20%2F%2F%202%20%20%20%5Cnpow(2%2C%2010)%20%2F%2F%201024%5Cnsqrt(1024)%20%2F%2F%2032%20%20%5Cn%5Cnround(2000%20%2F%203%20*%20100)%20%2F%20100%20%2F%2F%20666.67%5Cnround(2000%20%2F%203%2C%202)%20%20%20%20%20%20%20%20%20%20%2F%2F%20666.67%5Cn%5Cn_666%3A%202000%20%2F%203%20%20%2F%2F%20666.6666666666666%5Cnround(_666%2C%203)%20%20%2F%2F%20666.667%20%20%20%20%20%20%20%20%20%20%5Cnfloor(_666%2C%202)%20%20%2F%2F%20666.66%20%20%20%20%20%20%20%20%20%20%20%5Cnceil(_666%20%2F%202%2C%201)%20%20%2F%2F%20333.4%20%20%20%20%20%20%20%20%20%20%20%20%5Cnround(_666)%20%20%20%20%20%2F%2F%20667%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cnround(_666%2C%20-1)%20%2F%2F%20670%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cnround(_666%2C%20-2)%20%2F%2F%20700%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cn%5Cn2%5Cn4%5Cn6%5Cn%24sum(51%2C%2053)%20%3D%2012%20%20%20%20%20%20%20%5C%5C%5Cn%26%26%20%24sum(-3%2C%20-1)%20%3D%2012%20%20%20%20%20%20%20%5C%5C%5Cn%26%26%20%24sum(-3)%20%20%20%20%20%3D%2012%20%2F%2F%20true%5Cn%24avg(-2%2C%20-4)%20%2F%2F%204%5Cn%24min(-3%2C%20-5)%20%2F%2F%202%5Cn%24max(-4%2C%20-6)%20%2F%2F%206%5Cn%5Cn%23%20defining%20variables%20%26%20functions%5Cn%5Cntax_rate%3A%200.45%20%2F%2F%200.45%20%20%5Cntax_qcd%3A%20181920%20%2F%2F%20181920%5Cn1000000%20*%20tax_rate%20-%20tax_qcd%20%2F%2F%20268080%5Cn%5Cnfun(ads%2C%20usd%2C%20rmb%2C%20rate%2C%20qcd)%3A%20ads%20*%20usd%20*%20rmb%20*%20(1%20-%20rate)%20%2B%20qcd%5Cnfun(10000%2C%2045%2C%207%2C%20tax_rate%2C%20tax_qcd)%20%2F%2F%201914420.0000000002%5Cn%5Cnadd(%7B%20a%2C%20b%20%7D)%3A%20%5C%5C%5Cn%20%20%20%20a%20%2B%20b%5Cnadd(%7B%20a%3A%201%2C%20b%3A%202%20%7D)%20%2F%2F%203%5Cn%5Cn%23%20JavaScript%5Cn%5Cn%60%60%60%5Cnlet%20array%20%3D%20%5B1%2C%202%2C%203%5D%3B%5Cnreturn%20array.length%3B%5Cn%60%60%60%5Cn%5Cndouble(x)%3A%20%5C%5C%5Cn%60%60%60js%5Cnreturn%20x%20*%202%3B%5Cn%60%60%60%5Cn%5Cndouble(1)%5Cn%5Cn%22%7D1000000|1000000">Demo</a>
+            | <a target="_blank" href="https://iwill.im/2022/07/08/script-calculator/">Help</a>
+            ]
+        </div>
+        <div style="position: absolute; right: 0; top: 0; padding: var(--space) 0;">
+            <span id="errorsCount"></span>
+            decimal: <select id="decimalPlaces" onchange="sthChanged(event, this)">
+                <option value="-1">--</option><option value="0">0</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                <option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+            </select>
+            <!--
+            TODO: FixedPoint: <select id="fixedPoint" onchange="sthChanged(event, this)">
+                <option value="-1">--</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                <option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+            </select>
+            -->
+            rounding: <select id="roundingMethod" onchange="sthChanged(event, this)">
+                <option value="round">round</option><option value="floor">floor</option><option value="ceil">ceil</option>
+            </select>
+            <label>underline: <input type="checkbox" id="underline" onchange="underlineChanged(event, this)" /></label>
+            <button id="reset" onclick="resetClicked(event, this)">reset</button>
+            |
+            <button id="copy" onclick="copyOutputClicked(event, this)">copy</button>
+            <button id="share" onclick="shareShortenedURL(event, this)">share (beta)</button>
+        </div>
+    </div>
+    <div id="left" class="container">
+        <hr id="ruler" />
+        <textarea id="script" class="code" oninput="sthChanged(event, this)" onkeydown="shortcutsTriggered(event, this)" onscroll="scrollingChanged(event, this)"></textarea>
+        <pre id="rulerHelper" class="code"></pre>
+    </div>
+    <div id="right" class="container">
+        <textarea readonly id="result" class="code" onscroll="scrollingChanged(event, this)"></textarea>
+        <textarea readonly id="lineNumber" class="code" tabindex="-1" onscroll="scrollingChanged(event, this)"></textarea>
+        <textarea readonly id="output" tabindex="-1"></textarea>
+    </div>
+</body>
+<script type="text/javascript">
+(function onload(undefined) {
+    // "use strict";
+    
+    for (let method of ["round", "floor", "ceil"]) {
+        let _method = "_" + method;
+        Math[_method] = Math[method];
+        Math[method] = function(number, len) {
+            if (!len) {
+                return this[_method](number);
+            }
+            let pow = this.pow(10, this._floor(this.abs(len))); // !!!: `pow` supports negative numbers, but inaccurate
+            return len > 0 ? this[_method](number * pow) / pow : this[_method](number / pow) * pow;
+        };
+    }
+    
+    Math.$sum = function(values, from, till) {
+        let length = values.length;
+        if (from < 0) from = length + from;
+        else if (from === undefined) from = 0;
+        if (till < 0) till = length + till;
+        else if (till === undefined || till >= length) till = length - 1;
+        if (from > till) [from, till] = [till, from];
+        let sum = 0;
+        for (let i = from; i <= till; i++) {
+            sum += values[i];
+        }
+        return sum;
+    };
+    Math.$avg = function(values, from, till) {
+        let length = values.length;
+        if (from < 0) from = length + from;
+        else if (from === undefined) from = 0;
+        if (till < 0) till = length + till;
+        else if (till === undefined || till >= length) till = length - 1;
+        if (from > till) [from, till] = [till, from];
+        return this.$sum(values, from, till) / (till - from + 1);
+    };
+    Math.$min = function(values, from, till) {
+        let length = values.length;
+        if (from < 0) from = length + from;
+        else if (from === undefined) from = 0;
+        if (till < 0) till = length + till;
+        else if (till === undefined || till >= length) till = length - 1;
+        if (from > till) [from, till] = [till, from];
+        let min = values[from];
+        for (let i = from + 1; i <= till; i++) {
+            min = this.min(min, values[i]);
+        }
+        return min;
+    };
+    Math.$max = function(values, from, till) {
+        let length = values.length;
+        if (from < 0) from = length + from;
+        else if (from === undefined) from = 0;
+        if (till < 0) till = length + till;
+        else if (till === undefined || till >= length) till = length - 1;
+        if (from > till) [from, till] = [till, from];
+        let max = values[from];
+        for (let i = from + 1; i <= till; i++) {
+            max = this.max(max, values[i]);
+        }
+        return max;
+    };
+    
+    Math.GR = Math.sqrt(1.25) - 0.5; // GoldenRatio
+    
+    // let regExp = /^(?<name>[A-z_][A-z0-9_]*)\s*(?<args>\((\s*[A-z_][A-z0-9_]*\s*(,\s*[A-z_][A-z0-9_]*\s*)*)?\))\:/;
+    // tagged templates:
+    // #see https://stackoverflow.com/questions/12317049/how-to-split-a-long-regular-expression-into-multiple-lines-in-javascript/12317105#12317105
+    // #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+    RegExp.make = (regExp, opts) => new RegExp(regExp.raw[0].replace(/( #.*|\s)/mg, ""), opts || "");
+    
+    function tryCatch(f1, f2) {
+        try {
+            return f1();
+        }
+        catch (e) {
+            return f2(e);
+        }
+    }
+    
+    function debugGroup(label, fn) {
+        label = label.replace(/%/g, "%%");
+        if (fn) {
+            console.group(label);
+            console.time(label);
+            fn();
+            console.timeEnd(label);
+            console.groupEnd(label);
+        }
+    }
+    
+    function debugFunc(_args, src, fn) {
+        if (typeof src == "function") {
+            fn = src;
+            src = undefined;
+        }
+        let use_strict = (() => !this)();
+        if (use_strict) {
+            fn && fn();
+        }
+        else {
+            let path = [_args.callee.caller?.name, _args.callee.name].filter((x) => x).join(" > ");
+            if (src) {
+                path = `${src}.${path}`
+            }
+            console.debug(`func: ${path}`);
+            debugGroup(_args.callee.name, fn);
+        }
+    }
+    
+    let $left = document.querySelector("#left");
+    let $ruler = document.querySelector("#ruler");
+    let $rulerHelper = document.querySelector("#rulerHelper");
+    $rulerHelper.remove();
+    let $script = $left.querySelector("#script");
+    
+    let $right = document.querySelector("#right");
+    let $result = $right.querySelector("#result");
+    let $lineNumber = $right.querySelector("#lineNumber");
+    let $output = $right.querySelector("#output");
+    $output.remove(); // prevent finding by browser
+    
+    let $top = document.querySelector("#top");
+    let $decimalPlaces = $top.querySelector("#decimalPlaces");
+    // let $fixedPoint = $top.querySelector("#fixedPoint");
+    let $roundingMethod = $top.querySelector("#roundingMethod");
+    let $underline = $top.querySelector("#underline");
+    
+    function validScopes(name) {
+        let globalVar = ["Infinity", "NaN", "undefined",
+            "isFinite", "isNaN", "parseFloat", "parseInt",
+            "Number", "BigInt"]; // only math related, NO "Boolean", "String", "Array", "Object", "Date", "RegExp"
+        return Math[name] || (globalVar.includes(name) ? globalThis[name] : undefined);
+    }
+    
+    function commentIndex(line) {
+        let commentIndices = [line.indexOf("//"), (() => {
+            let commentMatches = [...line.matchAll(/#+\d*\s*/g)];
+            if (commentMatches.length) {
+                let match = commentMatches[0];
+                if (!/#\d+/.test(match[0])) {
+                    return match.index;
+                }
+                else if ((match = commentMatches[1])) {
+                    return match.index;
+                }
+            }
+            return -1;
+        })()].filter((x) => x >= 0);
+        let commentIndex = Math.min(...commentIndices);
+        return commentIndex == Infinity ? -1 : commentIndex;
+    }
+    
+    function calculate() { debugFunc(arguments, function() {
+        
+        /// prepare
+        let script = $script.value;
+        
+        let trimmed = script.trim();
+        document.querySelector("title").innerText = trimmed.slice(0, trimmed.indexOf("\n")) || "ScriptCalculator by Míng";
+        
+        // TODO: value.toLocaleString(undefined, {style: "decimal"/"currency"/"percent", currency: "USD"/"EUR"/"CNY", useGrouping: true});
+        // #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+        // let display = value.toLocaleString();
+        /* TODO: lines [{
+            result: number / "" / "ERROR",
+            display: converted-number / "" / "ERROR",
+            lineNumber: number / "",
+            output: `code = value // comment`
+        }, ...] */
+        let result = [], lineNumber = [], output = [];
+        globalThis.vals = [], globalThis.vars = {}, globalThis.funcs = {};
+        let multiLines = "", jsPrefix = "", jsBlock;
+        let lines = script.split("\n");
+        for (let ln = 0; ln < lines.length; ln++) { let line = lines[ln]; debugGroup(`#${ln} \`${line}\``, function() {
+            
+            let code, comment;
+            let varName, funcName, funcArgs;
+            let resToPercentage, resToBase;
+            let value, display;
+            
+            try {
+                code = line.trim();
+                
+                /// comments
+                let index = commentIndex(code);
+                if (index >= 0) {
+                    comment = code.slice(index).trim();
+                    code = code.slice(0, index).trim();
+                }
+                
+                /// limit
+                if (vals.length >= 1000 && code.length) {
+                    throw "too many calculations";
+                }
+                
+                /// multiple lines: escape line-break by `\`
+                let hasEsc = code.endsWith("\\");
+                if (hasEsc || multiLines) {
+                    multiLines += code.replace(/\\$/, "\t");
+                    if (hasEsc) {
+                        code = "";
+                    }
+                    else {
+                        code = multiLines;
+                        multiLines = "";
+                    }
+                }
+                
+                /// js blocks
+                let jsStarts = code.match(/^(.*:)?\s*```\s*\w*\s*$/), jsEnds = code.endsWith("```");
+                let jsCode = false;
+                if (jsBlock === undefined) {
+                    if (jsStarts) {
+                        if (multiLines) {
+                            throw `invalid symbol in \`${line}\``;
+                        }
+                        jsBlock = "";
+                        jsPrefix = code.replace(/```\s*\w*\s*$/, "");
+                        code = "";
+                    }
+                    else if (jsEnds) {
+                        throw `invalid symbol in \`${line}\``;
+                    }
+                }
+                else { // if (jsBlock)
+                    if (!jsEnds) {
+                        if (jsStarts) {
+                            throw `invalid symbol in \`${line}\``;
+                        }
+                        jsBlock += "\t" + code;
+                        code = "";
+                    }
+                    else { // if (jsEnds)
+                        code = jsPrefix + jsBlock + "\t" + code.replace(/```$/, "");
+                        jsPrefix = "";
+                        jsBlock = undefined;
+                        jsCode = true;
+                    }
+                }
+                
+                if (code) {
+                    if (!jsCode) {
+                        /// inline js code
+                        // `js` -> eval(js)
+                        code = code.replace(/`.*?`/g, (js) => {
+                            // #see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function#:~:text=the%20Function%20constructor%20creates%20functions%20which%20execute%20in%20the%20global%20scope%20only
+                            return new Function("funcs", "vars", "vals", `"use strict"; return ${js.slice(1, -1)}`)(funcs, vars, vals);
+                        });
+                        
+                        /// replace single = with ==
+                        code = code.replace(/(^|[^<!=>])=(?!=)/g, "$1==");
+                        
+                        /// validate symbols
+                        if (/['"`\\\[\];]/g.test(code)) {
+                            throw `invalid symbol in \`${line}\``;
+                        }
+                        // !!!: cannot use `/((?<!\w\s*\(\s*)\{|\}(?!\s*\)))/g`, because Safari does not support negative-lookbehind-assertion
+                        // - no `(` before `\w\s*{` - does not support yet
+                        // - after `}` no `)`
+                        if (/\}(?!\s*\))/g.test(code)) {
+                            throw `invalid symbol in \`${line}\``;
+                        }
+                        // `dot [spaces] (word-start) (no-number) words (word-end) [spaces] left-parenthesis` // `.xx(`
+                        if (/\.\s*[A-z_][A-z0-9_]*\s*\(/g.test(code)) {
+                            throw `invalid dot in \`${line}\``;
+                        }
+                    }
+                    
+                    /// find functions
+                    // `fun({?[arg0[, argN]*]?}?):` // supports roro args https://www.tinyblog.dev/blog/2020-07-13-javascript-roro-pattern/
+                    // `[A-z_][A-z0-9_]*` == `\b(?!\d)\w+\b`
+                    let regExp = RegExp.make`
+                        ^ \s*
+                        (?<name> \b[A-z_][A-z0-9_]* ) \s*
+                        (?<args>
+                            \(\s* \{? \s*
+                            (
+                                      \b[A-z_][A-z0-9_]* \s*
+                                (,\s* \b[A-z_][A-z0-9_]* \s* )*
+                            )?
+                            \}?\s* \)
+                        ) \s*
+                        \:
+                    ${""/* "img" */}`;
+                    let funcRes = code.match(regExp);
+                    if (funcRes) {
+                        funcName = funcRes.groups.name;
+                        if (validScopes(funcName)) {
+                            throw `invalid function def in \`${line}\``;
+                        }
+                        funcArgs = funcRes.groups.args;
+                        code = code.slice(funcRes.index + funcRes[0].length).trim();
+                        if (!code) {
+                            throw `invalid function def in \`${line}\``;
+                        }
+                    }
+                    
+                    /// find variables
+                    // `(word-start) (no-number) words (word-end) colon`
+                    let varRes = code.match(/^\b[A-z_][A-z0-9_]*\s*\:/);
+                    if (varRes) {
+                        varName = varRes[0].slice(0, -1).trim();
+                        if (validScopes(varName)) {
+                            throw `invalid variable def in \`${line}\``;
+                        }
+                        code = code.slice(varRes.index + varRes[0].length).trim();
+                    }
+                    
+                    if (!jsCode) {
+                        /// validate functions and insert namespaces
+                        // `(word-start) (no-number) words (word-end) [spaces] (left-parenthesis)`
+                        code = code.replace(/\$?\b[A-z_][A-z0-9_]*\s*\(/g, (prefix) => {
+                            let name = prefix.slice(0, -1).trim();
+                            if (["constructor", "prototype", "toSource", "valueOf", "eval"].includes(name)) {
+                                throw `invalid function call in \`${line}\``;
+                            }
+                            let namespace;
+                            if (typeof funcs[name] == "function" || name == funcName) namespace = "funcs";
+                            else if (typeof Math[name] == "function")  namespace = "Math";
+                            else if (typeof globalThis[name] == "function") namespace = "globalThis";
+                            else throw `invalid function call in \`${line}\``;
+                            prefix = `${namespace}.${name}(`;
+                            if (name.startsWith("$")) { // for `$sum`, ...
+                                prefix += "vals, "
+                            }
+                            return prefix;
+                        });
+                        
+                        /// replace variables with values
+                        // `(no-dot) (word-start) (no-number) words (word-end) (no- [spaces] (dot)(colon)(left-parenthesis))`
+                        // !!!: cannot use `(?<!\.\s*)`, because Safari does not support negative-lookbehind-assertion
+                        // code = code.replace(/(?<!\.\s*)\b[A-z_][A-z0-9_]*(?!\s*[.:(])\b/g, function(k) { ... }
+                        // !!!: replace `(?<!\.\s*)` with `\.?`, and return if matched a `.`
+                        code = code.replace(/\.?\b[A-z_][A-z0-9_]*(?!\s*[.:(])\b/g, (k) => {
+                            if (k.startsWith(".")) { return k; }
+                            if (funcName && new RegExp(`\\b${k}\\b`).test(funcArgs)) {
+                                return k;
+                            }
+                            let v = validScopes(k) || vars[k]; // `vars[k]` at last, because the value maybe `0`
+                            return `(${v !== undefined ? v : k})`;
+                        });
+                        
+                        /// replace `$` and `$x` with values
+                        // `dollar [numbers] (no-sum|avg|min|max)`
+                        code = code.replace(/\$-?\d*(?!(sum|avg|min|max))/g, ($x) => {
+                            if ($x == "$") {
+                                return `(${vars.$})`;
+                            }
+                            let index = Number($x.slice(1));
+                            if (index < 0) {
+                                index = vals.length + index;
+                            }
+                            return `(${vals[index]})`; // value or undefined
+                        });
+                        /// <👆🏿-use>: replace `👆 [color]` with values
+                        code = code.replace(/👆[🏻🏼🏼🏽🏾🏿]?/gu, ($x) => {
+                            return `(${vars.$})`;
+                        });
+                        /// prepend `$` if `(line-start) (no-dollar) (no-left-parenthesis) (no-words) (no-👆)`
+                        let prevRes = result[result.length - 1]; // if prev line has res, then prepend prev value - vars.$
+                        if ((prevRes || prevRes === 0 || prevRes === false) && prevRes != "ERROR" && code.length && code.match(/^([^~!\(\w\$👆]|!=)+/u)) {
+                            code = `(${vars.$}) ${code}`;
+                        }
+                        
+                        /// output percentage
+                        resToPercentage = code.match(/%%\s*$/);
+                        if (resToPercentage) {
+                            code = code.slice(0, resToPercentage.index).trim();
+                        }
+                        /// input percentage
+                        code = code.replace(/(\d+(\.\d+)?)\s*%(?!\s*[\w\(])/g, (pct) => {
+                            return `(${pct.replace(/\s*%/, "")} / 100)`;
+                        });
+                        
+                        /// convert base of number system
+                        let convert = code.match(/#\d+\s*$/);
+                        if (convert) {
+                            resToBase = Number(convert[0].slice(1));
+                            code = code.slice(0, convert.index).trim();
+                        }
+                    }
+                    
+                    /// eval
+                    // if `jsCode`: requires `return` in `code`
+                    // else: needs prepend `return` to `code` - `code` is math exp
+                    let js = jsCode ? code : "return " + code; // `return` value
+                    if (funcName) {
+                        js = `return ${funcArgs} => { ${js} }`; // `return` func
+                    }
+                    console.log(`eval: ${js}`.replace(/%/g, "%%"));
+                    let res = new Function("funcs", "vars", "vals", `"use strict"; ${js}`)(funcs, vars, vals);
+                    
+                    if (funcName) {
+                        funcs[funcName] = res;
+                    }
+                    else {
+                        value = res;
+                        if (typeof value == "function") {
+                            if (varName) {
+                                funcName = varName;
+                                funcArgs = "(...)";
+                                funcs[funcName] = value;
+                                varName = undefined;
+                                value = undefined;
+                            }
+                            // !!!: DEPRECATED
+                            else if (value.name) {
+                                funcName = value.name;
+                                funcArgs = "(...)";
+                                funcs[funcName] = value;
+                                value = undefined;
+                                throw "WARNING: defining func via func name is deprecated"
+                            }
+                        }
+                    }
+                }
+                else {
+                    value = undefined;
+                }
+                
+                /// value, variables and display
+                let type = typeof value;
+                if (type == "number") {
+                    let decimalPlaces = Number($decimalPlaces.value);
+                    let rounding = decimalPlaces >= 0 && ((value, dp) => Math[$roundingMethod.value](value, dp));
+                    if (rounding) {
+                        value = rounding(value, decimalPlaces);
+                    }
+                    
+                    if (resToPercentage) {
+                        let pctValue = value * 100;
+                        if (rounding) {
+                            pctValue = rounding(pctValue, decimalPlaces - 2);
+                        }
+                        display = pctValue + "%";
+                    }
+                    else if (resToBase && resToBase != 10) {
+                        let prefix = (resToBase == 2) ? "0b" : (resToBase == 8) ? "0o" : (resToBase == 16) ? "0x" : "";
+                        display = prefix + Math.abs(value).toString(resToBase).toUpperCase();
+                        if (value < 0) {
+                            display = "-" + display;
+                        }
+                    }
+                    else {
+                        let absValue = Math.abs(value);
+                        if (absValue < 1) {
+                            let maxLength = 20; // limited by Number.toFixed()
+                            if (absValue > Math.pow(10, - maxLength) && value.toString().indexOf("e") > 0) {
+                               display = value.toFixed(maxLength);
+                            }
+                        }
+                        else if (absValue > 1) {
+                            if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
+                                display = value.toExponential();
+                            }
+                            // else if (value.toString().indexOf("e") > 0) {
+                            //     display = value.toLocaleString("fullwide", { useGrouping: false });
+                            // }
+                        }
+                    }
+                }
+                else {
+                    if (resToPercentage || resToBase) {
+                        throw `invalid conversion in \`${line}\``;
+                    }
+                    
+                    if (type == "boolean") {
+                        // nothing to do
+                    }
+                    else {
+                        if (varName) {
+                            throw `invalid variable in \`${line}\``;
+                        }
+                        else if (value !== undefined) {
+                            throw `invalid result in \`${line}\``;
+                        }
+                    }
+                }
+                
+                let log = value ? `${code} = ${display || value}` : (`${code} ${comment || ""}`.trim() || "<empty-line>");
+                console.log("res: " + log.replace(/%/g, "%%"));
+            }
+            catch(e) {
+                console.warn((e + "").replace(/%/g, "%%"));
+                if (vars._enable_error) {
+                    value = `${e}`.startsWith("WARNING") ? e : "ERROR: " + e;
+                }
+                else {
+                    value = `${e}`.startsWith("WARNING") ? "WARNING" : "ERROR";
+                }
+            }
+            
+            /// result
+            result.push(display || value);
+            let text;
+            if (["number", "boolean"].includes(typeof value)) {
+                vals.push(value);
+                vars.$ = value;
+                if (varName) {
+                    vars[varName] = value;
+                }
+                lineNumber.push(vals.length - 1);
+                text = `${code.replace(/\s*funcs\.\s*/g, "")} = ${display || value} ${comment || ""}`;
+            }
+            else {
+                lineNumber.push("·");
+                text = funcName ? `${funcName}${funcArgs}: ${code} ${comment || ""}` : comment;
+            }
+            output.push(text?.trim().replace(/ ?\t/g, " \\\n"));
+        });}
+        
+        /// output
+        // let fixed = result.map((name, index) => name ? Number(name).toFixed(2) : name);
+        $result.value = result.join("\n");
+        $lineNumber.value = lineNumber.join("\n");
+        $output.value = output.join("\n").replace(/^ +(?=\\$)/mg, "").replace(/\n{3,}/g, "\n\n");
+        
+        let lnLength = vals.length.toString().length;
+        document.documentElement.style.setProperty("--ln-width", Math.max(2, lnLength) * 10 + "px");
+        
+        let errorsCount = result.reduce((obj, res) => {
+            if (typeof res == "string") {
+                if (res.startsWith("ERROR")) obj.errors += 1;
+                else if (res.startsWith("WARNING")) obj.warnings += 1;
+            }
+            return obj;
+        }, { errors: 0, warnings: 0 });
+        let text = [
+            errorsCount.errors && "errors: "+ errorsCount.errors,
+            errorsCount.warnings && "warnings: " + errorsCount.warnings,
+        ].filter((res) => res).join(", ");
+        document.querySelector("#errorsCount").innerText = text ? text + " |" : null;
+    });}
+    
+    function updateScriptStyle() {
+        $script.classList[$underline.checked ? "add" : "remove"]("underline");
+    }
+    
+    function updateBorderStyle() {
+        let urlTooLoong = location.href.length > 65536;
+        $script.style.outlineColor = $result.style.outlineColor = (urlTooLoong ? "red" : null);
+        if (navigator.userAgent.indexOf("Safari") >= 0) {
+            $script.style.outlineStyle = $result.style.outlineStyle = (urlTooLoong ? "solid" : null);
+        }
+        if (urlTooLoong) {
+            console.error(`url is too loong: ${location.href.length}!`);
+        }
+    }
+    
+    function updateRuler() {
+        if (vars._enable_ruler == false) {
+            $ruler.style.visibility = "hidden";
+            return;
+        }
+        let script = $script.value;
+        let start = $script.selectionStart;
+        let end = script.indexOf("\n", start);
+        if (end < 0) {
+            end = script.length;
+        }
+        $rulerHelper.innerText = script.slice(start, end);
+        $left.appendChild($rulerHelper);
+        let width = $rulerHelper.offsetWidth;
+        let space = (parseFloat(window.getComputedStyle($script).getPropertyValue("padding-right"))
+            + parseFloat(window.getComputedStyle($script).getPropertyValue("border-right-width")));
+        $ruler.style.visibility = width <= space ? "hidden" : "visible";
+        // `+ 1` (caret width) to avoid overlapping the ruler and caret
+        $ruler.style.right = Math.ceil(width + 1) + "px"
+        $rulerHelper.remove();
+    }
+    
+    let jsSerializeToHash = false;
+    const selectionPlaceholder = 1000000;
+    const selectionRegExp = /(\d+)\|(\d+)$/;
+    
+    function serializeToHash() { debugFunc(arguments, function() {
+        let json = {};
+        if ($decimalPlaces.selectedIndex) {
+            json.decimalPlaces = $decimalPlaces.selectedIndex;
+        }
+        if ($roundingMethod.selectedIndex) {
+            json.roundingMethod = $roundingMethod.selectedIndex;
+        }
+        if ($underline.checked) {
+            json.underline = true;
+        }
+        if ($script.value) {
+            json.script = $script.value;
+        }
+        let hash = Object.keys(json).length ? `#${encodeURIComponent(JSON.stringify(json))}` : "";
+        if (location.hash.replace(selectionRegExp, "") != hash) {
+            jsSerializeToHash = true;
+            location.hash = hash; // !!!: DONOT reset `jsSerializeToHash` here
+        }
+        if (location.hash) {
+            location.replace(`${hash}${$script.selectionStart + selectionPlaceholder}|${$script.selectionEnd + selectionPlaceholder}`);
+        }
+        updateBorderStyle();
+    });}
+    
+    function updateWithHashChange() {
+        if (jsSerializeToHash) {
+            jsSerializeToHash = false;
+            return;
+        }
+        debugFunc(arguments, function() {
+            let hash = decodeURIComponent(location.hash.slice(1));
+            let match = hash.match(selectionRegExp);
+            let selection;
+            if (match) {
+                hash = hash.slice(0, match.index);
+                selection = { start: match[1] - selectionPlaceholder, end: match[2] - selectionPlaceholder };
+            }
+            let json = tryCatch(() => JSON.parse(hash), (e) => { script: hash });
+            $decimalPlaces.selectedIndex = json.decimalPlaces || 0;
+            // $fixedPoint.selectedIndex = json.fixedPoint;
+            $roundingMethod.selectedIndex = json.roundingMethod || 0;
+            $roundingMethod.disabled = ($decimalPlaces.selectedIndex == 0);
+            $underline.checked = json.underline;
+            updateScriptStyle();
+            updateBorderStyle();
+            $script.value = json.script || "";
+            if (selection) {
+                $script.setSelectionRange(selection.start, selection.start);
+                $script.focus();
+                $script.setSelectionRange(selection.start, selection.end, "none"); // reset direction to `none`
+            }
+        });
+        calculate();
+    }
+    
+    let calculateTimeoutID = 0, serializeTimeoutID = 0;
+    
+    globalThis.sthChanged = function sthChanged(event, target) { debugFunc(arguments, target.id);
+        $roundingMethod.disabled = ($decimalPlaces.selectedIndex == 0);
+        if (target == $script) {
+            updateRuler();
+        }
+        clearTimeout(calculateTimeoutID);
+        calculateTimeoutID = setTimeout(function _sthChanged() {
+            calculate();
+            updateRuler();
+        }, 1000);
+        clearTimeout(serializeTimeoutID);
+        serializeTimeoutID = setTimeout(function _sthChanged() {
+            serializeToHash();
+        }, 1000);
+    };
+    
+    globalThis.onhashchange = function onhashchange(event) {
+        updateWithHashChange();
+    };
+    
+    globalThis.underlineChanged = function underlineChanged(event, target) {
+        updateScriptStyle();
+        serializeToHash(); // need not timeout
+    };
+    
+    globalThis.resetClicked = function resetClicked(event, target) { debugFunc(arguments, target.id);
+        $decimalPlaces.selectedIndex = 0;
+        // $fixedPoint.selectedIndex = 0;
+        $roundingMethod.selectedIndex = 0;
+        $underline.checked = false;
+        updateScriptStyle();
+        sthChanged(null, target);
+    };
+    
+    globalThis.shortcutsTriggered = function shortcutsTriggered(event, target) {
+        if (document.activeElement != $script || event.metaKey || event.repeat || event.isComposing || /^(Meta|Control|Alt|Shift)/.test(event.code)) {
+            return;
+        }
+        const helpKey = "Slash", configKey = "Comma", caseKey = "KeyU", formatKeys = ["KeyL", "KeyR", "KeyM", "BracketLeft", "BracketRight", "Slash"];
+        let keyName = event.code;
+        if (!event.ctrlKey || !([helpKey, configKey, caseKey].includes(keyName) || formatKeys.includes(keyName))) {
+            return;
+        }
+        debugFunc(arguments, target.id, function() {
+            let script = $script.value;
+            
+            let start = $script.selectionStart, end = $script.selectionEnd;
+            let selection;
+            
+            if (keyName == helpKey && event.shiftKey) {
+                let help = `
+                    control+l: align script [l]eft
+                    control+r: align script [r]ight
+                    control+m: align script [m]iddle - trailing comments
+                    control+[/]: indent left or right
+                    control+/: comment/uncomment line
+                    control+,: insert config with default values
+                    control+shift+/: show this help
+                `.replace(/^\s*/mg, "");
+                alert(help);
+                return false;
+            }
+            else if (keyName == configKey) {
+                let config = `
+                     _enable_error: false // bool
+                     _enable_ruler:  true // bool
+                    _indent_spaces:     4 // +int
+                `.replace(/^\s*/mg, "");
+                selection = config;
+            }
+            else if (keyName == caseKey) {
+                if (start == end) {
+                    let left = script.slice(0, start).match(/\w+$/);
+                    if (left) {
+                        start -= left[0].length;
+                    }
+                    let right = script.slice(end).match(/^\w+/);
+                    if (right) {
+                        end += right[0].length;
+                    }
+                }
+                selection = script.slice(start, end);
+                if (selection) {
+                    if (event.altKey) {
+                        selection = selection[0].toUpperCase() + selection.slice(1).toLowerCase();
+                    }
+                    else {
+                        selection = selection[event.shiftKey ? "toLowerCase" : "toUpperCase"]();
+                    }
+                }
+            }
+            else {
+                
+                if (script[start] == "\n" && start < end) {
+                    start += 1;
+                }
+                else {
+                    let left = script.slice(0, start).match(/\n?.*$/);
+                    if (left) {
+                        start -= left[0].length;
+                        if (left[0].startsWith("\n")) {
+                            start += 1;
+                        }
+                    }
+                }
+                
+                if (script[end - 1] == "\n" && end > start) {
+                    end -= 1;
+                }
+                else {
+                    let right = script.slice(end).match(/^.*\n?/);
+                    if (right) {
+                        end += right[0].length;
+                        if (right[0].endsWith("\n")) {
+                            end -= 1;
+                        }
+                    }
+                }
+                
+                let selections = script.slice(start, end).split("\n");
+                
+                if (keyName == "KeyL") {
+                    let maxLength = selections.reduce((max, line) => {
+                        if (!event.altKey) {
+                            line = line.replace(/^ */, "");
+                        }
+                        return Math.max(max, line.length);
+                    }, 0);
+                    let spaces = vars._indent_spaces > 0 ? vars._indent_spaces : 4;
+                    let mod = maxLength % spaces;
+                    if (mod) {
+                        maxLength += (spaces - mod);
+                    }
+                    selections = selections.map((line, index) => {
+                        if (!event.altKey) {
+                            line = line.replace(/^ */, "");
+                        }
+                        let spaces = " ".repeat(maxLength - line.length);
+                        return event.shiftKey ? spaces + line : line + spaces;
+                    });
+                }
+                
+                else if (keyName == "KeyR") {
+                    selections = selections.map((line) => line.trim());
+                }
+                
+                else if (keyName == "KeyM") {
+                    let commentLengths = selections.reduce((array, line) => {
+                        let index = commentIndex(line);
+                        // return `-1` if `index == 0` to ignore whole-line comment
+                        array.push(index < 0 ? 0 : index == 0 ? -1 : line.length - index);
+                        return array;
+                    }, []);
+                    let maxLength = commentLengths.reduce((max, length) => Math.max(max, length), 0);
+                    if (maxLength > 0) { // `if (maxLength > 0)` instead of `if (maxLength)`, because `maxLength` may be `-1`
+                        let spaces = vars._indent_spaces > 0 ? vars._indent_spaces : 4;
+                        let mod = maxLength % spaces;
+                        if (mod) {
+                            maxLength += (spaces - mod);
+                        }
+                        for (let i = 0; i < commentLengths.length; i++) {
+                            let line = selections[i];
+                            let length = commentLengths[i];
+                            if (length < 0) {
+                                continue;
+                            }
+                            if (!length) {
+                                line = line.replace(/\s*$/, "") + " ";
+                            }
+                            selections[i] = line + " ".repeat(maxLength - length);
+                        }
+                    }
+                }
+                
+                else if (keyName == "BracketLeft") {
+                    selections = selections.map((line, index) => {
+                        let spaces = vars._indent_spaces > 0 ? vars._indent_spaces : 4;
+                        line += " ".repeat(spaces);
+                        if (!event.altKey) {
+                            line = line.replace(new RegExp(`^ {1,${spaces}}`), "");
+                        }
+                        return line;
+                    });
+                }
+                
+                else if (keyName == "BracketRight") {
+                    selections = selections.map((line, index) => {
+                        let spaces = vars._indent_spaces > 0 ? vars._indent_spaces : 4;
+                        line = line.replace(new RegExp(`(.*?)( {1,${spaces}})$`), "$2$1");
+                        if (event.altKey) {
+                            line = line.replace(new RegExp(`^ {1,${spaces}}`), "");
+                        }
+                        return line;
+                    });
+                }
+                
+                else if (keyName == "Slash") {
+                    selections = selections.map((line, index) => {
+                        if (line.startsWith("//")) {
+                            return line.replace(/^\/\/ ?/, "");
+                        }
+                        else {
+                            return "// " + line;
+                        }
+                    });
+                }
+                
+                selection = selections.join("\n");
+            }
+            
+            $script.setSelectionRange(start, end);
+            document.execCommand("insertText", false, selection); // for undo
+            end = start + selection.length;
+            $script.setSelectionRange(start, end);
+        });
+        
+        sthChanged(null, target);
+    };
+    
+    // Chrome does not supports `onselectionchanged`
+    document.addEventListener("selectionchange", function selectionchange(event) {
+        if (document.activeElement != $script) {
+            return;
+        }
+        debugFunc(arguments);
+        updateRuler();
+        clearTimeout(serializeTimeoutID);
+        serializeTimeoutID = setTimeout(function _selectionchange() {
+            serializeToHash();
+        }, 1000);
+    });
+    
+    globalThis.scrollingChanged = function scrollingChanged(event, target) { // debugFunc(arguments, target.id);
+        [$script, $result, $lineNumber].forEach((e, i) => e.scrollTop = target.scrollTop);
+    };
+    
+    globalThis.copyOutputClicked = function copyOutputClicked(event, target) { debugFunc(arguments, function() {
+        $right.appendChild($output)
+        $output.focus();
+        $output.select();
+        document.execCommand("copy");
+        (target || $script).focus();
+        $output.remove();
+    });};
+    
+    globalThis.shareShortenedURL = function shareShortenedURL(event, target) { debugFunc(arguments, function() {
+        // https://docs.github.com/en/rest/issues/issues#create-an-issue
+        let href = encodeURIComponent(location.href);
+        let base = encodeURIComponent(location.href.replace(/[?#].*/, ""));
+        window.open(`https://github.com/iwill/url-db/issues/new?template=url-shortener-template.md&title=${base}&body=${href}`, "_blank");
+    });};
+    
+    if (!location.hash && !location.href.endsWith("#")) {
+        location.hash = '#%7B"script"%3A"%23%20ScriptCalculator%5Cn%5Cn%23%23%20Quick%20Start%20%7C%20简单应用%5Cn%5Cn1%20%2B%202%5Cn*%203%5Cn*%2080%25%5Cn%5Cn%23%23%20Result%20Ref%20%7C%20引用结果%5Cn%5Cn10%20-%20%24%5Cn%2F%2F%20Prev%20Result%20%7C%20%24%20是前一个结果，也可以用%20👆🏿%5Cn%5Cn%242%20%2F%202%5Cn%2F%2F%20Nth%20Result%20%7C%20%242%20里的%202%20是右边结果编号%20👉🏿%5Cn%5Cn%23%23%20Variables%20%7C%20变量%5Cn%5Cna%3A%201%5Cnb%3A%202%5Cna%20%2B%20b%5Cn%5Cn%23%23%20Functions%20%7C%20函数%5Cn%5Cnadd\(x%2C%20y\)%3A%20x%20%2B%20y%5Cnadd\(1%2C%202\)%5Cnadd\(3%2C%204\)%5Cn%5Cn%23%23%20More%20%7C%20更多好用的功能介绍看这里%20👇🏿%5Cn%5Cn%2F%2F%20Blog%3A%20https%3A%2F%2Fiwill.im%2F2022%2F07%2F08%2Fscript-calculator%2F%5Cn%2F%2F%20GitHub%3A%20https%3A%2F%2Fgithub.com%2Fiwill%2FScriptCalculator%23readme%5Cn"%7D';
+    }
+    else {
+        updateWithHashChange();
+    }
+})();
+</script>
+</html>
