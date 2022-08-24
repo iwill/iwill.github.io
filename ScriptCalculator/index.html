@@ -882,7 +882,7 @@
                 hash = hash.slice(0, match.index);
                 selection = { start: match[1] - selectionPlaceholder, end: match[2] - selectionPlaceholder };
             }
-            let json = tryCatch(() => JSON.parse(hash), (e) => { script: hash });
+            let json = tryCatch(() => JSON.parse(hash), (e) => ({ script: hash }));
             $decimalPlaces.selectedIndex = json.decimalPlaces || 0;
             // $fixedPoint.selectedIndex = json.fixedPoint;
             $roundingMethod.selectedIndex = json.roundingMethod || 0;
