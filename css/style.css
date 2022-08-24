@@ -395,7 +395,7 @@ body small {
 }
 body acronym,
 body abbr {
-  border-bottom: 1px dotted;
+  border-bottom: 1px groove;
 }
 body ul,
 body ol,
@@ -649,7 +649,7 @@ body {
 #header #nav ul li {
   display: inline-block;
   margin-right: 15px;
-  border-right: 1px dotted;
+  border-right: 1px groove;
   border-color: #2bbc8a;
   vertical-align: middle;
 }
@@ -785,7 +785,7 @@ body {
   background-repeat: repeat-x;
 }
 #header-post #nav ul li {
-  border-right: 1px dotted #2bbc8a;
+  border-right: 1px groove #2bbc8a;
 }
 #header-post #nav ul li:last-child {
   margin-right: 0;
@@ -1576,7 +1576,7 @@ pre {
   overflow-x: auto;
   padding: 10px 15px;
   padding-bottom: 0;
-  border: 1px dotted #908d8d;
+  border: 1px groove #908d8d;
   border-radius: 4px;
   font-size: 13px;
   font-family: "Menlo", "Meslo LG", monospace;
@@ -1590,7 +1590,7 @@ pre code {
 }
 code {
   padding: 0 5px;
-  border: 1px dotted #908d8d;
+  border: 1px groove #908d8d;
   border-radius: 2px;
   -webkit-border-radius: 2px;
 }
