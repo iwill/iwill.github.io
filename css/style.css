@@ -395,7 +395,7 @@ body small {
 }
 body acronym,
 body abbr {
-  border-bottom: 1px groove;
+  border-bottom: 0.5px solid;
 }
 body ul,
 body ol,
@@ -513,7 +513,7 @@ body {
   color: #c9cacc;
   text-decoration: none;
   background-image: linear-gradient(transparent, transparent 5px, #c9cacc 5px, #c9cacc);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -545,7 +545,7 @@ body {
 .content h5 a:hover,
 .content h6 a:hover {
   background-image: linear-gradient(transparent, transparent 6px, #2bbc8a 6px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -556,7 +556,7 @@ body {
 }
 .content h6 a:hover {
   background-image: linear-gradient(transparent, transparent 6px, #2bbc8a 6px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -642,14 +642,14 @@ body {
 }
 #header #nav ul a:hover {
   background-image: linear-gradient(transparent, transparent 5px, #2bbc8a 5px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
 #header #nav ul li {
   display: inline-block;
   margin-right: 15px;
-  border-right: 1px groove;
+  border-right: 0.5px solid;
   border-color: #2bbc8a;
   vertical-align: middle;
 }
@@ -780,12 +780,12 @@ body {
 }
 #header-post #nav ul a:hover {
   background-image: linear-gradient(transparent, transparent 5px, #2bbc8a 5px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
 #header-post #nav ul li {
-  border-right: 1px groove #2bbc8a;
+  border-right: 0.5px solid #2bbc8a;
 }
 #header-post #nav ul li:last-child {
   margin-right: 0;
@@ -915,7 +915,7 @@ body {
   left: 0;
   z-index: 5000000;
   width: 100%;
-  border-top: 1px solid #908d8d;
+  border-top: 0.5px solid #908d8d;
   background: #212326;
   transition: opacity 0.2s;
 }
@@ -942,7 +942,7 @@ body {
 }
 #footer-post #nav-footer a:hover {
   background-image: linear-gradient(transparent, transparent 5px, #2bbc8a 5px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -1197,7 +1197,7 @@ article .content .caption {
 }
 .article-tag .tag-link {
   background-image: linear-gradient(transparent, transparent 10px, #2bbc8a 10px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -1206,7 +1206,7 @@ article .content .caption {
 }
 .article-category .category-link {
   background-image: linear-gradient(transparent, transparent 10px, #2bbc8a 10px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
@@ -1269,7 +1269,7 @@ article .content .caption {
 #footer li {
   display: inline-block;
   margin-right: 15px;
-  border-right: 1px solid;
+  border-right: 0.5px solid;
   border-color: #908d8d;
   vertical-align: middle;
 }
@@ -1576,8 +1576,10 @@ pre {
   overflow-x: auto;
   padding: 10px 15px;
   padding-bottom: 0;
-  border: 1px groove #908d8d;
+  border-style: none;
   border-radius: 4px;
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
   font-size: 13px;
   font-family: "Menlo", "Meslo LG", monospace;
   line-height: 22px;
@@ -1590,8 +1592,10 @@ pre code {
 }
 code {
   padding: 0 5px;
-  border: 1px groove #908d8d;
+  border-style: none;
   border-radius: 2px;
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
   -webkit-border-radius: 2px;
 }
 .highlight {
@@ -1615,7 +1619,7 @@ code {
   font-style: italic;
   font-size: 0.8em;
   background-image: linear-gradient(transparent, transparent 10px, #2bbc8a 10px, #2bbc8a);
-  background-position: bottom;
+  background-position: 0 bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
 }
