@@ -14,6 +14,9 @@
     - remove #underline?
     - remove #reset?
     
+    - array, objc
+    - map, reduce, filter ...
+    
     - ewiki shortcuts config, and help
     
     - refactor `calculate()` with RORO pattern
@@ -842,7 +845,14 @@
     
     let jsSerializeToHash = false;
     const selectionPlaceholder = 1000000;
-    const selectionRegExp = /(\d+)\|(\d+)$/;
+    
+    // TODO: `-?` and `.?` instead of `-` to backward compatible with `start|end`
+    const selectionRegExp = /-?(\d+).?(\d+)$/;
+    // const selectionRegExp = /-(\d+)-(\d+)$/;
+    
+    // base64 -> encode("+/=") -> "%2B%2F%3D"
+    const encode = (x) => btoa(unescape(encodeURIComponent(x))).replace(/[\+\/=]/g, encodeURIComponent);
+    const decode = (x) => decodeURIComponent(escape(atob(x.replace(/%(?:2B|2F|3D)/g, decodeURIComponent))));
     
     function serializeToHash() { debugFunc(arguments, function() {
         let json = {};
@@ -858,13 +868,14 @@
         if ($script.value) {
             json.script = $script.value;
         }
-        let hash = Object.keys(json).length ? `#${encodeURIComponent(JSON.stringify(json))}` : "";
+        let hash = Object.keys(json).length ? `#${encode(JSON.stringify(json))}` : "";
         if (location.hash.replace(selectionRegExp, "") != hash) {
             jsSerializeToHash = true;
             location.hash = hash; // !!!: DONOT reset `jsSerializeToHash` here
         }
         if (location.hash) {
-            location.replace(`${hash}${$script.selectionStart + selectionPlaceholder}|${$script.selectionEnd + selectionPlaceholder}`);
+            let start = $script.selectionStart + selectionPlaceholder, end = $script.selectionEnd + selectionPlaceholder;
+            location.replace(`${hash}-${start}-${end}`);
         }
         updateBorderStyle();
     });}
@@ -875,13 +886,14 @@
             return;
         }
         debugFunc(arguments, function() {
-            let hash = decodeURIComponent(location.hash.slice(1));
+            let hash = location.hash.slice(1);
             let match = hash.match(selectionRegExp);
             let selection;
             if (match) {
                 hash = hash.slice(0, match.index);
                 selection = { start: match[1] - selectionPlaceholder, end: match[2] - selectionPlaceholder };
             }
+            hash = tryCatch(() => decode(hash), (e) => decodeURIComponent(hash)); // TODO: backward compatible
             let json = tryCatch(() => JSON.parse(hash), (e) => ({ script: hash }));
             $decimalPlaces.selectedIndex = json.decimalPlaces || 0;
             // $fixedPoint.selectedIndex = json.fixedPoint;
@@ -898,6 +910,7 @@
             }
         });
         calculate();
+        serializeToHash(); // update to latest version hash
     }
     
     let calculateTimeoutID = 0, serializeTimeoutID = 0;
@@ -1149,13 +1162,14 @@
     
     globalThis.shareShortenedURL = function shareShortenedURL(event, target) { debugFunc(arguments, function() {
         // https://docs.github.com/en/rest/issues/issues#create-an-issue
-        let href = encodeURIComponent(location.href);
-        let base = encodeURIComponent(location.href.replace(/[?#].*/, ""));
+        let href = encode(location.href);
+        let base = encode(location.href.replace(/[?#].*/, ""));
         window.open(`https://github.com/iwill/url-db/issues/new?template=url-shortener-template.md&title=${base}&body=${href}`, "_blank");
     });};
     
     if (!location.hash && !location.href.endsWith("#")) {
         location.hash = '#%7B"script"%3A"%23%20ScriptCalculator%5Cn%5Cn%23%23%20Quick%20Start%20%7C%20简单应用%5Cn%5Cn1%20%2B%201%5Cn*%203%5Cn%2F%203%5Cn%23%23%20Result%20Ref%20%7C%20引用结果%5Cn%5Cn%24%20*%2010%25%5Cn%2F%2F%20Prev%20Result%20%7C%20%24%20是前一个结果%5Cn%5Cn%242%20%3D%20%24-2%5Cn%2F%2F%20Nth%20Result%20%7C%20%242%20里的%202%20是右边结果编号%5Cn%2F%2F%20%24-2%20里的%20-2%20是上面第二个结果%5Cn%5Cn%23%23%20Variables%20%7C%20变量%5Cn%5Cna%3A%201%5Cnb%3A%202%5Cna%20%2B%20b%5Cn%5Cn%23%23%20Functions%20%7C%20函数%5Cn%5Cnadd(x%2C%20y)%3A%20x%20%2B%20y%5Cnadd(1%2C%202)%5Cnadd(3%2C%204)%5Cn%5Cn%23%23%20More%20%7C%20更多好用的功能介绍看这里%20👇🏿%5Cn%5Cn%2F%2F%20Blog%3A%20https%3A%2F%2Fiwill.im%2F2022%2F07%2F08%2Fscript-calculator%2F%5Cn%2F%2F%20GitHub%3A%20https%3A%2F%2Fgithub.com%2Fiwill%2FScriptCalculator%23readme%5Cn"%7D1000416|1000416';
+        // location.hash = "#eyJzY3JpcHQiOiIjIFNjcmlwdENhbGN1bGF0b3JcblxuIyMgUXVpY2sgU3RhcnQgfCDnroDljZXlupTnlKhcblxuMSArIDFcbiogM1xuLyAzXG4jIyBSZXN1bHQgUmVmIHwg5byV55So57uT5p6cXG5cbiQgKiAxMCVcbi8vIFByZXYgUmVzdWx0IHwgJCDmmK%2FliY3kuIDkuKrnu5PmnpxcblxuJDIgPSAkLTJcbi8vIE50aCBSZXN1bHQgfCAkMiDph4znmoQgMiDmmK%2Flj7Povrnnu5PmnpznvJblj7dcbi8vICQtMiDph4znmoQgLTIg5piv5LiK6Z2i56ys5LqM5Liq57uT5p6cXG5cbiMjIFZhcmlhYmxlcyB8IOWPmOmHj1xuXG5hOiAxXG5iOiAyXG5hICsgYlxuXG4jIyBGdW5jdGlvbnMgfCDlh73mlbBcblxuYWRkKHgsIHkpOiB4ICsgeVxuYWRkKDEsIDIpXG5hZGQoMywgNClcblxuIyMgTW9yZSB8IOabtOWkmuWlveeUqOeahOWKn%2BiDveS7i%2Be7jeeci%2Bi%2FmemHjCDwn5GH8J%2BPv1xuXG4vLyBCbG9nOiBodHRwczovL2l3aWxsLmltLzIwMjIvMDcvMDgvc2NyaXB0LWNhbGN1bGF0b3IvXG4vLyBHaXRIdWI6IGh0dHBzOi8vZ2l0aHViLmNvbS9pd2lsbC9TY3JpcHRDYWxjdWxhdG9yI3JlYWRtZVxuIn0%3D-1000416-1000416";
     }
     else {
         updateWithHashChange();
