@@ -189,10 +189,11 @@
 <figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-util --<span class="built_in">save</span></span><br><span class="line">npm install hexo-<span class="built_in">local</span>-<span class="built_in">image</span> --<span class="built_in">save</span></span><br><span class="line">npm install hexo-deployer-git --<span class="built_in">save</span></span><br><span class="line">npm install hexo-generator-feed --<span class="built_in">save</span></span><br></pre></td></tr></table></figure>
 
 <p>更多参考 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/wiki/Plugins">Hexo Plugins</a>。</p>
-<h2 id="Hexo-模版"><a href="#Hexo-模版" class="headerlink" title="Hexo 模版"></a>Hexo 模版</h2><p>Hexo 的模版不多，我用的是 <a target="_blank" rel="noopener" href="http://hexo.io/hexo-theme-light/">Light</a>。</p>
-<p>模版有单独的配置文件 <code>themes/light/_config.yml</code>。在这里可以添加页面、链接，比如 About、RSS，还可以设置 <a target="_blank" rel="noopener" href="http://www.addthis.com/" title="Personalized widgets at your finger tips. | AddThis">AddThis</a> 以便分享、传播。</p>
-<p>需要注意的是 Light 默认使用的是 Facebook 的评论，会与 Hexo 里内置的 DISQUS 冲突，导致两者都无法正常显示。鉴于墙的存在，建议把 <code>themes/light/_config.yml</code> 中的 Facebook 相关的设置注释掉，而且 DISQUS 更好用。</p>
-<p>更多参考 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/wiki/Themes">Hexo Themes</a>。</p>
+<h2 id="Hexo-模版"><a href="#Hexo-模版" class="headerlink" title="Hexo 模版"></a>Hexo 模版</h2><p>Hexo 的模版不多，我用的是 <del><a target="_blank" rel="noopener" href="http://hexo.io/hexo-theme-light/">Light</a></del> <a target="_blank" rel="noopener" href="https://probberechts.github.io/hexo-theme-cactus/">Cactus</a> - Dark，非常简洁，内置另外 White、Light 和 Classic 三款配色也都很美观，还有数十款代码高亮可选。</p>
+<p>模版有单独的配置文件 <code>themes/cactus/_config.yml</code>，可以添加页面、链接，例如 About、RSS，并且还可以展示 GitHub 项目、Disqus 评论等，更多功能详见 <a target="_blank" rel="noopener" href="https://github.com/probberechts/hexo-theme-cactus#features">Features</a>。</p>
+<!-- 需要注意的是 Light 默认使用的是 Facebook 的评论，会与 Hexo 里内置的 DISQUS 冲突，导致两者都无法正常显示。鉴于墙的存在，建议把 `themes/cactus/_config.yml` 中的 Facebook 相关的设置注释掉，而且 DISQUS 更好用。 -->
+
+<p>更多参考 <a target="_blank" rel="noopener" href="https://hexo.io/themes/">Hexo Themes</a>。</p>
 <h2 id="GitHub-Pages"><a href="#GitHub-Pages" class="headerlink" title="GitHub Pages"></a>GitHub Pages</h2><p>现在本地的博客已经搭建起来了，下一步是发布到 GitHub。</p>
 <ol>
 <li><p>在 GitHub 上 <a target="_blank" rel="noopener" href="https://github.com/new">创建一个 repo</a>，格式是 <code>username</code>.github.io。</p>
@@ -292,6 +293,7 @@
     
     2014-2022
     iwill
+    - Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> with Theme <a target="_blank" rel="noopener" href="https://probberechts.github.io/hexo-theme-cactus/">Cactus</a>
   </div>
   <div class="footer-right">
     <nav>
