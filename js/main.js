@@ -113,9 +113,11 @@ $(document).ready(function() {
     
     if (/\/about\b/.test(location.pathname)) {
       
-      let copyTimeout = 0;
-      $("#copy_m").click(function() {
-        clearTimeout(copyTimeout);
+      let timeout = 5000, displayTimeout = 0;
+      
+      $("#copy_m")
+      .click(function() {
+        clearTimeout(displayTimeout);
         
         let ori = this.innerHTML;
         let text = "#^gt$\nod$\nll^per\nw\n^co##at$\nod$ Míng ^lt$\nMr^per";
@@ -133,16 +135,26 @@ $(document).ready(function() {
         selection.removeAllRanges();
         
         this.innerHTML = ori;
-        this.setAttribute("data-content", "deipoc // ");
         
+        this.setAttribute("data-content", " // copied".split("").reverse().join(""));
         let self = this;
-        copyTimeout = setTimeout(function() {
+        displayTimeout = setTimeout(function() {
           self.setAttribute("data-content", "");
-        }, 5000);
+        }, timeout);
+        
+        return false;
+      })
+      .bind("copy", function() {
+        clearTimeout(displayTimeout);
+        
+        this.setAttribute("data-content", ` // ${this.getAttribute("title")}`.split("").reverse().join(""));
+        let self = this;
+        displayTimeout = setTimeout(function() {
+          self.setAttribute("data-content", "");
+        }, timeout);
         
         return false;
       });
     }
-    
   }
 });
