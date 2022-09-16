@@ -25,6 +25,7 @@ $(document).ready(function() {
    * for Desktop, tablet and mobile.
    */
   if ($(".post").length) {
+
     var menu = $("#menu");
     var nav = $("#menu > #nav");
     var menuIcon = $("#menu-icon, #menu-icon-tablet");
@@ -109,5 +110,44 @@ $(document).ready(function() {
         }
       });
     }
+
+    if (/\/about\b/.test(location.pathname)) {
+      
+      let copyTimeout = 0;
+      
+      $("#copy_m").click(function() {
+
+        let ori = this.innerHTML;
+
+        let text = "#^gt$\nod$\nll^per\nw\n^co##at$\nod$ Míng ^lt$\nMr^per";
+        let mask = text.split("\n").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
+        this.innerHTML = mask;
+
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          selection.removeAllRanges();
+        }
+        const range = document.createRange();
+        range.selectNode(this);
+        selection.addRange(range);
+        document.execCommand("copy");
+        selection.removeAllRanges();
+
+        this.innerHTML = ori;
+
+        this.setAttribute("data-content", "deipoc ");
+        let self = this;
+        if (copyTimeout != 0) {
+          clearTimeout(copyTimeout);
+        }
+        copyTimeout = setTimeout(function() {
+          self.setAttribute("data-content", "");
+          copyTimeout = 0;
+        }, 5000);
+
+        return false;
+      });
+    }
+
   }
 });
