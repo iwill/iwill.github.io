@@ -120,7 +120,7 @@ $(document).ready(function() {
         clearTimeout(displayTimeout);
         
         let ori = this.innerHTML;
-        let text = "#^gt$\nod$\nll^per\nw\n^co##at$\nod$ Míng ^lt$\nMr^per";
+        let text = "#^gt$\nod$\nll^per\nw\n^plus$s^co##at$\nod$ Míng ^lt$\nMr^per";
         let mask = text.split("\n").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
         this.innerHTML = mask;
         
