@@ -113,46 +113,35 @@ $(document).ready(function() {
     
     if (/\/about\b/.test(location.pathname)) {
       
-      let timeout = 5000, displayTimeout = 0;
+      let displayTimeout = 0;
+      const display = function(text) {
+        copy_m.setAttribute("data-content", ` // ${text}`.split("").reverse().join(""));
+        displayTimeout = setTimeout(function() {
+          copy_m.setAttribute("data-content", "");
+        }, 5000);
+      };
       
-      $("#copy_m")
+      $(copy_m)
       .click(function() {
         clearTimeout(displayTimeout);
         
-        let ori = this.innerHTML;
         let text = "#^gt$\nod$\nll^per\nw\n^plus$s^co##at$\nod$ Míng ^lt$\nMr^per";
         let mask = text.split("\n").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
+        let ori = this.innerHTML;
         this.innerHTML = mask;
-        
-        const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-          selection.removeAllRanges();
-        }
-        const range = document.createRange();
-        range.selectNode(this);
-        selection.addRange(range);
-        document.execCommand("copy");
-        selection.removeAllRanges();
-        
+        let copy = this.innerText;
         this.innerHTML = ori;
         
-        this.setAttribute("data-content", " // copied".split("").reverse().join(""));
-        let self = this;
-        displayTimeout = setTimeout(function() {
-          self.setAttribute("data-content", "");
-        }, timeout);
+        navigator.clipboard.writeText(copy).then(
+          () => display("copied"),
+          () => display("failed to copy")
+        );
         
         return false;
       })
       .bind("copy", function() {
         clearTimeout(displayTimeout);
-        
-        this.setAttribute("data-content", ` // ${this.getAttribute("title")}`.split("").reverse().join(""));
-        let self = this;
-        displayTimeout = setTimeout(function() {
-          self.setAttribute("data-content", "");
-        }, timeout);
-        
+        display(this.getAttribute("title"));
         return false;
       });
     }
