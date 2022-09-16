@@ -133,7 +133,7 @@ $(document).ready(function() {
         selection.removeAllRanges();
         
         this.innerHTML = ori;
-        this.setAttribute("data-content", "deipoc ");
+        this.setAttribute("data-content", "deipoc // ");
         
         let self = this;
         copyTimeout = setTimeout(function() {
