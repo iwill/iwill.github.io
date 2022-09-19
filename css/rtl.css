@@ -48,7 +48,7 @@
 .rtl #footer #logo {
   float: right;
 }
-.rtl article .content h2:before {
+.rtl article .content h2 .headerlink:before {
   right: -1rem;
 }
 .rtl .post-list .post-item .meta {

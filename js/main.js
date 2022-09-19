@@ -125,8 +125,8 @@ $(document).ready(function() {
       .click(function() {
         clearTimeout(displayTimeout);
         
-        let text = "#^gt$\nod$\nll^per\nw\n^plus$s^co##at$\nod$ Míng ^lt$\nMr^per";
-        let mask = text.split("\n").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
+        let text = this.getAttribute("data-m");
+        let mask = text.split(";").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
         let ori = this.innerHTML;
         this.innerHTML = mask;
         let copy = this.innerText;

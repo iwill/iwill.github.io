@@ -339,21 +339,30 @@ body .h2 {
   text-transform: none;
   letter-spacing: normal;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 body h3 {
+  position: relative;
   color: #eee;
-  text-decoration: underline;
+  text-decoration: none;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 body h4,
 body h5,
 body h6 {
+  position: relative;
   display: inline;
   text-decoration: none;
   color: #ccc;
+}
+body h4 {
   font-weight: bold;
+  font-size: 0.9rem;
+}
+body h5,
+body h6 {
+  font-weight: normal;
   font-size: 0.9rem;
 }
 body h3,
@@ -826,6 +835,9 @@ body {
   max-width: 20em;
   max-height: calc(95vh - 7rem);
   text-align: right;
+/* .toc-item:not(.toc-level-1):before
+      color: $color-accent-1
+      content: "#" */
 }
 #header-post #toc a:hover {
   color: #2bbc8a;
@@ -843,11 +855,11 @@ body {
 }
 #header-post #toc .toc-level-3 {
   color: #908d8d;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 #header-post #toc .toc-level-4 {
   color: #747070;
-  font-size: 0.4rem;
+  font-size: 0.7rem;
 }
 #header-post #toc .toc-level-5 {
   display: none;
@@ -1093,21 +1105,33 @@ article header .meta * {
   font-size: 0.85rem;
 }
 article header .author {
-  text-transform: uppercase;
+/* text-transform: uppercase */
   letter-spacing: 0.01em;
   font-weight: 700;
 }
 article header .postdate {
   display: inline;
 }
-article .content h2:before {
+article .content h2 .headerlink:before {
   position: absolute;
-  top: -4px;
   left: -1rem;
   color: #2bbc8a;
   content: "#";
   font-weight: bold;
   font-size: 1.2rem;
+}
+article .content h3 .headerlink:before,
+article .content h4 .headerlink:before,
+article .content h5 .headerlink:before,
+article .content h6 .headerlink:before {
+  position: absolute;
+  left: -0.8rem;
+  content: "#";
+  color: #2bbc8a;
+}
+article .content h5 .headerlink:before,
+article .content h6 .headerlink:before {
+  color: #ccc;
 }
 article .content img,
 article .content video {
