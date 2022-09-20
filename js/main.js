@@ -113,6 +113,14 @@ $(document).ready(function() {
     
     if (/\/about\b/.test(location.pathname)) {
       
+      function evenOdd(s) {
+          return s.replace(/./g, (c) => {
+              let d = c.charCodeAt(0);
+              if (d < 32 || d == 64 || d >= 127) return c;
+              return String.fromCharCode(d + (d % 2 || -1) * (d > 64 || -1));
+          });
+      }
+      
       let displayTimeout = 0;
       const display = function(text) {
         copy_m.setAttribute("data-content", ` // ${text}`.split("").reverse().join(""));
@@ -126,7 +134,7 @@ $(document).ready(function() {
         clearTimeout(displayTimeout);
         
         let text = this.getAttribute("data-m");
-        let mask = text.split(";").reverse().join("i").replace(/#/g, "m").replace(/\^/g, "&").replace(/\$/g, ";");
+        let mask = evenOdd(text).replaceAll("+", "#");
         let ori = this.innerHTML;
         this.innerHTML = mask;
         let copy = this.innerText;
