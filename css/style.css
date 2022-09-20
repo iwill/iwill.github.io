@@ -1624,11 +1624,22 @@ code {
 .highlight {
   overflow-x: auto;
   margin: 1rem 0;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 10px;
+  border-radius: 8px;
   background: #212326;
   font-family: "Menlo", "Meslo LG", monospace;
-  -webkit-border-radius: 4px;
+  -webkit-border-radius: 8px;
+}
+.highlight:before {
+  content: ' ';
+  background: #fc625d;
+  border-radius: 50%;
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 5px 5px 10px;
 }
 .highlight figcaption {
   margin: -5px 0 5px;
