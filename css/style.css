@@ -1626,15 +1626,15 @@ code {
   margin: 1rem 0;
   padding: 10px;
   border-radius: 8px;
-  background: #212326;
+  background: #000;
   font-family: "Menlo", "Meslo LG", monospace;
   -webkit-border-radius: 8px;
 }
 .highlight:before {
   content: ' ';
-  background: #fc625d;
+  background: #ec6a5e;
+  box-shadow: 20px 0 #f4bf4f, 40px 0 #61c554;
   border-radius: 50%;
-  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
   width: 12px;
   height: 12px;
   display: inline-block;
