@@ -26,6 +26,14 @@ $(document).ready(function() {
    */
   if ($(".post").length) {
 
+    // ".content a, .content code"
+    $(".content a").each(function(idx, ele) {
+      let $this = $(this);
+      // "http://www.abc.com:123/page.html?a=1&b=2#abcd+e-f"
+      let html = $this.html().replace(/(\w+)/g, "$1<wbr />"); // insert `<wbr />` befor words and after symbols
+      $this.html(html);
+    });
+
     var menu = $("#menu");
     var nav = $("#menu > #nav");
     var menuIcon = $("#menu-icon, #menu-icon-tablet");
