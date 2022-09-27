@@ -29,9 +29,14 @@ $(document).ready(function() {
     // ".content a, .content code"
     $(".content a").each(function(idx, ele) {
       let $this = $(this);
-      // "http://www.abc.com:123/page.html?a=1&b=2#abcd+e-f"
-      let html = $this.html().replace(/(\w+)/g, "$1<wbr />"); // insert `<wbr />` befor words and after symbols
-      $this.html(html);
+      if (!$this.children().length) {
+        let html = $this.html();
+        // "http://www.abc.com:123/page.html?a=1&b=2#abcd+e-f"
+        let new = html.replace(/(\w+)/g, "$1<wbr />"); // insert `<wbr />` befor words and after symbols
+        if (new != html) {
+          $this.html(html);
+        }
+      }
     });
 
     var menu = $("#menu");
