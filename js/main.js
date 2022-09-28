@@ -32,9 +32,9 @@ $(document).ready(function() {
       if (!$this.children().length) {
         let html = $this.html();
         // "http://www.abc.com:123/page.html?a=1&b=2#abcd+e-f"
-        let new = html.replace(/(\w+)/g, "$1<wbr />"); // insert `<wbr />` befor words and after symbols
-        if (new != html) {
-          $this.html(html);
+        let wbr = html.replace(/(\w+)/g, "$1<wbr />"); // insert `<wbr />` befor words and after symbols
+        if (wbr != html) {
+          $this.html(wbr);
         }
       }
     });
