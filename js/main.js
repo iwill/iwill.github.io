@@ -136,9 +136,9 @@ $(document).ready(function() {
       
       let displayTimeout = 0;
       const display = function(text) {
-        copy_m.setAttribute("data-content", ` // ${text}`.split("").reverse().join(""));
+        copy_m.setAttribute("data-content-before", ` // ${text}`.split("").reverse().join(""));
         displayTimeout = setTimeout(function() {
-          copy_m.setAttribute("data-content", "");
+          copy_m.setAttribute("data-content-before", "");
         }, 5000);
       };
       
@@ -159,12 +159,12 @@ $(document).ready(function() {
         );
         
         return false;
-      })
-      .bind("copy", function() {
+      });
+      /* .bind("copy", function() {
         clearTimeout(displayTimeout);
         display(this.getAttribute("title"));
         return false;
-      });
+      }) */
     }
   }
 });
