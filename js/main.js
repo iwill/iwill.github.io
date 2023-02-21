@@ -139,7 +139,7 @@ $(document).ready(function() {
         copy_m.setAttribute("data-content-before", ` // ${text}`.split("").reverse().join(""));
         displayTimeout = setTimeout(function() {
           copy_m.setAttribute("data-content-before", "");
-        }, 5000);
+        }, 2000);
       };
       
       $(copy_m)

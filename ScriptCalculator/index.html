@@ -807,6 +807,7 @@
     function updateBorderStyle() {
         let urlTooLoong = location.href.length > 65536;
         $script.style.outlineColor = $result.style.outlineColor = (urlTooLoong ? "red" : null);
+        // TODO: navigator.userAgentData
         if (navigator.userAgent.indexOf("Safari") >= 0) {
             $script.style.outlineStyle = $result.style.outlineStyle = (urlTooLoong ? "solid" : null);
         }
