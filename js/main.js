@@ -154,8 +154,8 @@ $(document).ready(function() {
         this.innerHTML = ori;
         
         navigator.clipboard.writeText(copy).then(
-          () => display("copied"),
-          () => display("failed to copy")
+          () => display("copied!"),
+          () => display("failed to copy!")
         );
         
         return false;
