@@ -126,6 +126,14 @@ $(document).ready(function() {
     
     if (/\/about\b/.test(location.pathname)) {
       
+      function rev94(s) {
+        return s.replace(/./g, (c) => {
+          let d = c.charCodeAt(0);
+          if (d <= 32 || d >= 127) return c;
+          return String.fromCharCode((33 + 126) - d);
+        });
+      }
+      
       function evenOdd(s) {
           return s.replace(/./g, (c) => {
               let d = c.charCodeAt(0);
@@ -147,7 +155,9 @@ $(document).ready(function() {
         clearTimeout(displayTimeout);
         
         let text = this.getAttribute("data-m");
-        let mask = evenOdd(text).replaceAll("+", "#");
+        let mask = rev94(text).replaceAll("+", "#");
+        // let text = this.getAttribute("data-m");
+        // let mask = evenOdd(text).replaceAll("+", "#");
         let ori = this.innerHTML;
         this.innerHTML = mask;
         let copy = this.innerText;
