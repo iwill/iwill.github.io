@@ -130,7 +130,7 @@ $(document).ready(function() {
           return s.replace(/./g, (c) => {
               let d = c.charCodeAt(0);
               if (d < 32 || d == 64 || d >= 127) return c;
-              return String.fromCharCode(d + (d % 2 || -1) * (d > 64 || -1));
+              return String.fromCharCode(d + (d % 2 || -1) * (d > 64 ? 1 : -1));
           });
       }
       
