@@ -29,7 +29,7 @@
     let $link = document.querySelector("#link");
     let $remaining = document.querySelector("#remaining");
     
-    $link.href = "/ScriptCalculator/" + location.hash;
+    $link.href = "https://calc.iwill.im/" + location.hash;
     
     function setSeconds(remaining) {
         $remaining.innerText = `${remaining} ${remaining > 1 ? "seconds" : "second"}`
